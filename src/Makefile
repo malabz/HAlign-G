@@ -29,7 +29,7 @@ TARGET = halign-g
 all: $(TARGET)
 
 $(TARGET): $(OBJS_C) $(OBJS_CPP)
-	$(CXX) $^ -o $@ -static $(LDFLAGS) -O3
+	$(CXX) $^ -o $@  $(LDFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $< -o $@
