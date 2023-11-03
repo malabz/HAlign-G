@@ -69,8 +69,8 @@ Or, install via `conda` and simple test:
 conda install -c malab -c conda-forge halign-g
 halign-g.exe -h
 ```
-
-
+## Test data
+https://github.com/malabz/HAlign-G-data
 
 # HAlign-G tools in `tools` folder
 |tool id|file name|description|
