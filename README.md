@@ -1,5 +1,5 @@
-# Halign-G: A rapid and low-memory multiple-genome aligner for thousands of human genomes
-Halign-G is a tool written in C++ for aligning multiple gemones. It runs on Linux and Windows.
+# HAlign-G: A rapid and low-memory multiple-genome aligner for thousands of human genomes
+HAlign-G is a tool written in C++ for aligning multiple gemones. It runs on Linux and Windows.
 
 ## Usage
 ```
@@ -20,9 +20,9 @@ halign-g Input_file Output_file [-r/--reference val] [-p/--threads val] [-bwt/--
 
 2.Download and install Anaconda. Download Anaconda for different systems [here](https://www.anaconda.com/products/distribution#Downloads). Instructional video of anaconda installation [1](https://www.youtube.com/watch?v=AshsPB3KT-E) or [2](http://lab.malab.cn/%7Etfr/Install_anaconda_in_Linux.mp4) (Copyright belongs to the original work).
 
-3.Install Halign-G.
+3.Install HAlign-G.
 ```bash
-#1 Create and activate a conda environment for TPMA
+#1 Create and activate a conda environment for HAlign-G
 conda create -n haligng_env
 conda activate haligng_env
 
@@ -30,10 +30,10 @@ conda activate haligng_env
 conda config --add channels malab
 conda config --add channels conda-forge
 
-#3 Install Halign-G
+#3 Install HAlign-G
 conda install -c malab -c conda-forge halign-g
 
-#4 Test Halign-G
+#4 Test HAlign-G
 halign-g -h
 ```
 
@@ -42,10 +42,10 @@ halign-g -h
 1. Download and Compile the source code. (Make sure your version of gcc >= 9.4.0 or clang >= 13.0.0)
 ```bash
 #1 Download
-git clone https://github.com/malabz/Halign-G.git
+git clone https://github.com/malabz/HAlign-G.git
 
 #2 Open the folder
-cd Halign-G
+cd HAlign-G
 
 #3 Compile
 make -j16
@@ -56,7 +56,7 @@ make -j16
 
 ### Windows - from Visual Studio 2022
 
-1. First, download [zip](https://github.com/malabz/Halign-G/archive/refs/heads/main.zip) and use `Bandizip`, `WinRAR` or any other archive manager software to extract this file.
+1. First, download [zip](https://github.com/malabz/HAlign-G/archive/refs/heads/main.zip) and use `Bandizip`, `WinRAR` or any other archive manager software to extract this file.
 
 2. Make programs from `Visual Studio 2022`:
 - First of all, download and install [`Visual Studio 2022`](https://visualstudio.microsoft.com/vs/).
@@ -72,7 +72,7 @@ halign-g.exe -h
 
 
 
-# Halign-G tools in `tools` folder
+# HAlign-G tools in `tools` folder
 |tool id|file name|description|
 |:-:|:-:|:-:|
 |0|time_mem.py|Calculate the maximum time and memory, can process multiple threads/processes|
