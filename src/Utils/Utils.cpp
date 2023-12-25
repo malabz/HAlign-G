@@ -4168,8 +4168,7 @@ void Stream::main_maf2(int num, std::vector<std::string>& name, std::vector<size
                                 fprintf(fpw1, "-");
                             fi++;
                         }
-                        if ((*ptr) != '-')
-                            I++;
+                        I++;
                         fprintf(fpw1, "%c", (*ptr));
                     }
                     while (fi < insert_fa.size())
