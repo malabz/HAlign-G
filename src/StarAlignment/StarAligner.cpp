@@ -2,27 +2,27 @@
 #include "StarAligner.hpp"
 
 
-//ÏÈµ÷ÓÃÀà³õÊ¼»¯£¬ÔÙµ÷ÓÃ_get_gaps£» ´«ÈëintĞòÁĞÊı¾İ£» ·µ»Ø×îºó½á¹û£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸övec_set_centretor´æ´¢Èô¸É¸öInsertion£¬ÓĞindex+number
+//å…ˆè°ƒç”¨ç±»åˆå§‹åŒ–ï¼Œå†è°ƒç”¨_get_gapsï¼› ä¼ å…¥intåºåˆ—æ•°æ®ï¼› è¿”å›æœ€åç»“æœï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªvec_set_centretorå­˜å‚¨è‹¥å¹²ä¸ªInsertionï¼Œæœ‰index+number
 auto star_alignment::StarAligner::get_gaps(std::vector<utils::seq_NCBI2NA> &sequences, std::vector<std::vector<utils::Insertion>> &N_gap, std::vector<std::string>& name, std::vector<bool>& sign, std::vector<size_t>& Length,std::vector<bool>& TU, std::vector<utils::more_block>& more_gap, bool mg_tag, utils::MAF_info& MAFinfo, int threshold1, int threshold2, int center) -> std::vector<std::vector<utils::Insertion>>
 {
-    return StarAligner(sequences,N_gap, name, sign,Length,TU, more_gap, mg_tag, MAFinfo,center)._get_gaps(threshold1, threshold2);//´«Èë²ÎÊıºó£¬µ÷ÓÃ_get_gapsµÚ¶ş²ãµÄ·µ»Ø½á¹û
+    return StarAligner(sequences,N_gap, name, sign,Length,TU, more_gap, mg_tag, MAFinfo,center)._get_gaps(threshold1, threshold2);//ä¼ å…¥å‚æ•°åï¼Œè°ƒç”¨_get_gapsç¬¬äºŒå±‚çš„è¿”å›ç»“æœ
 }
-//Àà³õÊ¼»¯
+//ç±»åˆå§‹åŒ–
 star_alignment::StarAligner::StarAligner(std::vector<utils::seq_NCBI2NA>& sequences, std::vector<std::vector<utils::Insertion>>& N_gap, std::vector<std::string>& name, std::vector<bool>& sign, std::vector<size_t>& Length, std::vector<bool>& TU, std::vector<utils::more_block>& more_gap, bool mg_tag, utils::MAF_info& MAFinfo, int center)
-    : _sequences(sequences) //ĞòÁĞ´«Èë
+    : _sequences(sequences) //åºåˆ—ä¼ å…¥
     , _name(name)
     , _sign(sign)
-    , _lengths(Length) //¼ÇÂ¼Ã¿ÌõĞòÁĞµÄ³¤¶È
+    , _lengths(Length) //è®°å½•æ¯æ¡åºåˆ—çš„é•¿åº¦
     , _TU(TU)
     , _N_gap(N_gap)
     , _more_gap(more_gap)
     , _mg_tag(mg_tag)
     , _MAFinfo(MAFinfo)
-    , _row(_sequences.size())  // ĞòÁĞÌõÊı
-    , _centre(_set_centre(center))   //°´³¤¶È×î³¤Ñ°ÕÒÖĞĞÄĞòÁĞ
-    , _centre_len(_lengths[_centre]) //ÖĞĞÄĞòÁĞµÄ³¤¶È
+    , _row(_sequences.size())  // åºåˆ—æ¡æ•°
+    , _centre(_set_centre(center))   //æŒ‰é•¿åº¦æœ€é•¿å¯»æ‰¾ä¸­å¿ƒåºåˆ—
+    , _centre_len(_lengths[_centre]) //ä¸­å¿ƒåºåˆ—çš„é•¿åº¦
 {}
-//¼ÇÂ¼Ã¿ÌõĞòÁĞµÄ³¤¶È
+//è®°å½•æ¯æ¡åºåˆ—çš„é•¿åº¦
 
 star_alignment::StarAligner::~StarAligner()
 {
@@ -38,7 +38,7 @@ std::vector<size_t> star_alignment::StarAligner::_set_lengths()
     for (size_t i = 0; i != _row; ++i) lengths[i] = _sequences[i].length;
     return lengths;
 }
-//°´³¤¶È×î³¤Ñ°ÕÒÖĞĞÄĞòÁĞ
+//æŒ‰é•¿åº¦æœ€é•¿å¯»æ‰¾ä¸­å¿ƒåºåˆ—
 //std::vector<unsigned char> star_alignment::StarAligner::_set_centre() const 
 size_t star_alignment::StarAligner::_set_centre(int center)
 {
@@ -55,9 +55,9 @@ size_t star_alignment::StarAligner::_set_centre(int center)
     if (center != -1)
         centre_index = center;
     std::cout << "                    | Info : Center sequence: " << _name[centre_index] << "\t" << _lengths[centre_index] << "\n";
-    std::cout << "                    | Info : Sequence nummer: " << _name.size() <<"\n";
+    std::cout << "                    | Info : Sequence number: " << _name.size() <<"\n";
     std::string center_line;
-    utils::get_BIN_seq_from_noN(centre_index, center_line);//¶ÁÈëÖĞĞÄĞòÁĞ
+    utils::get_BIN_seq_from_noN(centre_index, center_line);//è¯»å…¥ä¸­å¿ƒåºåˆ—
     _sequences[centre_index].length = center_line.size();
     _sequences[centre_index].seq = utils::BLAST_PackDNA(center_line);
     cout_cur_time();
@@ -69,14 +69,14 @@ size_t star_alignment::StarAligner::_set_centre(int center)
     return centre_index;
 }
 
-//ÀàÒÑ¾­³õÊ¼»¯£¬²»ĞèÒª´«Èë±äÁ¿¡£//·µ»Ø×îºó½á¹û£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸övector´æ´¢Èô¸É¸öInsertion£¬ÓĞindex+number
+//ç±»å·²ç»åˆå§‹åŒ–ï¼Œä¸éœ€è¦ä¼ å…¥å˜é‡ã€‚//è¿”å›æœ€åç»“æœï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªvectorå­˜å‚¨è‹¥å¹²ä¸ªInsertionï¼Œæœ‰index+number
 auto star_alignment::StarAligner::_get_gaps(int threshold1, int threshold2) const
         -> std::vector<std::vector<utils::Insertion>>
 {
     if (_mg_tag)
-        return std::move(_merge_results(mul_sv_maf_pairwise_align(threshold1, threshold2)));// ·µ»Ø£º Ë«±ÈÍêºóµÄ£¬ÕûºÏºóµÄ½á¹û
+        return std::move(_merge_results(mul_sv_maf_pairwise_align(threshold1, threshold2)));// è¿”å›ï¼š åŒæ¯”å®Œåçš„ï¼Œæ•´åˆåçš„ç»“æœ
     else
-        return std::move(_merge_results(mul_pairwise_align(threshold1, threshold2)));// ·µ»Ø£º Ë«±ÈÍêºóµÄ£¬ÕûºÏºóµÄ½á¹û
+        return std::move(_merge_results(mul_pairwise_align(threshold1, threshold2)));// è¿”å›ï¼š åŒæ¯”å®Œåçš„ï¼Œæ•´åˆåçš„ç»“æœ
 }
 
 void star_alignment::StarAligner::get_common_substrings_vector(Substrings& C_Strings, std::vector<triple>& substrings, bool sign, size_t read_len)
@@ -84,14 +84,14 @@ void star_alignment::StarAligner::get_common_substrings_vector(Substrings& C_Str
     Substrings& tmp = C_Strings;
     tmp.sign = sign;
 
-    size_t thresh1 = arguments::sv_thresh_len < 200 ? 200 : arguments::sv_thresh_len;;// read_len * 0.05; //¼ä¸ô
-    size_t thresh2 = arguments::sv_thresh_len;//read_len * 0.02; //µ¥¶ÀÒ»¸ö,»òÕßĞ¡¼¯ºÏ
+    size_t thresh1 = arguments::sv_thresh_len < 200 ? 200 : arguments::sv_thresh_len;;// read_len * 0.05; //é—´éš”
+    size_t thresh2 = arguments::sv_thresh_len;//read_len * 0.02; //å•ç‹¬ä¸€ä¸ª,æˆ–è€…å°é›†åˆ
     float thresh3 = 0.5;
     //thresh2 = thresh2 > 50 ? thresh2 : 50;
     std::vector<std::vector<triple>> Subs;
-    if (substrings.size() < 1)    //[A.index£¬B.index£¬length] , A is center
+    if (substrings.size() < 1)    //[A.indexï¼ŒB.indexï¼Œlength] , A is center
         return;
-    bool tag = false; //ÊÇ·ñÒÑ¾­¿ªÍ·
+    bool tag = false; //æ˜¯å¦å·²ç»å¼€å¤´
     for (int i = 1; i < substrings.size(); i++)
     {
         if (tag)
@@ -152,7 +152,7 @@ void star_alignment::StarAligner::get_common_substrings_vector(Substrings& C_Str
 
 }
 
-//ºÏ²¢ÕıÄæ£¬±£ÁôÕı´®£¬²Ã¼ôÄæ´®,ĞÂ°æ
+//åˆå¹¶æ­£é€†ï¼Œä¿ç•™æ­£ä¸²ï¼Œè£å‰ªé€†ä¸²,æ–°ç‰ˆ
 void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::vector<quadras>& new_intervals, std::vector<quadra>& intervals, std::vector<triple>& common_substrings, std::vector<triple>& common_substrings0, size_t _centre_len, size_t length, bool sign)
 {
     
@@ -163,9 +163,9 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
     int thresh = arguments::sv_thresh_len;
     if (!sign)//-
     {
-        get_common_substrings_vector(C_Strings, common_substrings, true, length);//ÕıµÄÉÙ£¬¸ºµÄ¶à
+        get_common_substrings_vector(C_Strings, common_substrings, true, length);//æ­£çš„å°‘ï¼Œè´Ÿçš„å¤š
         intervals.resize(common_substrings0.size() + C_Strings.Subs.size());
-        //ÕûºÏÕıÄæ
+        //æ•´åˆæ­£é€†
 
         it = 0;
         i = C_Strings.Subs.size() - 1;
@@ -176,10 +176,10 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             B_start1 = common_substrings0[j][1];
             if (B_start0 <= B_start1)
             {
-                intervals[it][4] = 0;//Ó²±È±êÊ¶ ÕıµÄ
-                //intervals[it][0] = _centre_len - C_Strings.Subs[i].back()[0] - C_Strings.Subs[i].back()[2];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                intervals[it][4] = 0;//ç¡¬æ¯”æ ‡è¯† æ­£çš„
+                //intervals[it][0] = _centre_len - C_Strings.Subs[i].back()[0] - C_Strings.Subs[i].back()[2];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                 //intervals[it][1] = _centre_len - C_Strings.Subs[i][0][0];//A_end
-                intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                 intervals[it][1] = C_Strings.Subs[i].back()[0] + C_Strings.Subs[i].back()[2];//A_end
                 intervals[it][2] = length - C_Strings.Subs[i].back()[1] - C_Strings.Subs[i].back()[2];//B_start
                 intervals[it][3] = length - C_Strings.Subs[i][0][1];//B_end
@@ -188,8 +188,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             }
             else
             {
-                intervals[it][4] = 1;// ¸ºµÄ
-                intervals[it][0] = common_substrings0[j][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                intervals[it][4] = 1;// è´Ÿçš„
+                intervals[it][0] = common_substrings0[j][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                 intervals[it][1] = common_substrings0[j][0] + common_substrings0[j][2];//A_end
                 intervals[it][2] = common_substrings0[j][1];//B_start
                 intervals[it][3] = common_substrings0[j][1] + common_substrings0[j][2];//B_end
@@ -199,24 +199,24 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             /*
             while (j < intervals.size())
             {
-                if (intervals[j][3] <= C_Si[2])//interval  Ä©¶Ë ÔÚ×ó±ß
+                if (intervals[j][3] <= C_Si[2])//interval  æœ«ç«¯ åœ¨å·¦è¾¹
                     ;
-                else if (intervals[j][3] > C_Si[2] && intervals[j][3] <= C_Si[3]) //interval  Ä©¶Ë ÔÚÖĞ¼ä
+                else if (intervals[j][3] > C_Si[2] && intervals[j][3] <= C_Si[3]) //interval  æœ«ç«¯ åœ¨ä¸­é—´
                 {
-                    if (intervals[j][2] >= C_Si[2]) //interval  Ê¼¶Ë ÔÚÖĞ¼ä
-                            intervals[j][4] = -1;//É¾µô
-                    else//interval  Ê¼¶Ë ÔÚ×ó±ß,  É¾³ıÓÒ²¿ÖØµş
+                    if (intervals[j][2] >= C_Si[2]) //interval  å§‹ç«¯ åœ¨ä¸­é—´
+                            intervals[j][4] = -1;//åˆ æ‰
+                    else//interval  å§‹ç«¯ åœ¨å·¦è¾¹,  åˆ é™¤å³éƒ¨é‡å 
                     {
                         intervals[j][3] = C_Si[2];
                         intervals[j][1] = C_Si[0];
                         intervals[j][1] = intervals[j][1] < intervals[j][0]? intervals[j][0]: intervals[j][1];
                     }
                 }
-                else//interval  Ä©¶Ë ÔÚÓÒ±ß
+                else//interval  æœ«ç«¯ åœ¨å³è¾¹
                 {
-                    if (intervals[j][2] >= C_Si[3]) //interval  Ê¼¶Ë ÔÚÓÒ±ß
+                    if (intervals[j][2] >= C_Si[3]) //interval  å§‹ç«¯ åœ¨å³è¾¹
                         break;
-                    else if (intervals[j][2] >= C_Si[2]) //interval  Ê¼¶Ë ÔÚÖĞ¼ä //É¾³ı×ó²¿ÖØµş
+                    else if (intervals[j][2] >= C_Si[2]) //interval  å§‹ç«¯ åœ¨ä¸­é—´ //åˆ é™¤å·¦éƒ¨é‡å 
                     {
                         intervals[j][2] = C_Si[3];
                         intervals[j][0] = C_Si[1];
@@ -224,7 +224,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
 
 
                     }
-                    else//interval  Ê¼¶Ë ÔÚ×ó±ß,  É¾³ıÁ½±ßÖØµş
+                    else//interval  å§‹ç«¯ åœ¨å·¦è¾¹,  åˆ é™¤ä¸¤è¾¹é‡å 
                     {
 
                     }
@@ -235,8 +235,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         }
         while (i >= 0)
         {
-            intervals[it][4] = 0;//Ó²±È±êÊ¶ ÕıµÄ
-            intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+            intervals[it][4] = 0;//ç¡¬æ¯”æ ‡è¯† æ­£çš„
+            intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
             intervals[it][1] = C_Strings.Subs[i].back()[0] + C_Strings.Subs[i].back()[2];//A_end
             intervals[it][2] = length - C_Strings.Subs[i].back()[1] - C_Strings.Subs[i].back()[2];//B_start
             intervals[it][3] = length - C_Strings.Subs[i][0][1];//B_end
@@ -245,8 +245,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         }
         while (j < common_substrings0.size())
         {
-            intervals[it][4] = 1;// ¸ºµÄ
-            intervals[it][0] = common_substrings0[j][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+            intervals[it][4] = 1;// è´Ÿçš„
+            intervals[it][0] = common_substrings0[j][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
             intervals[it][1] = common_substrings0[j][0] + common_substrings0[j][2];//A_end
             intervals[it][2] = common_substrings0[j][1];//B_start
             intervals[it][3] = common_substrings0[j][1] + common_substrings0[j][2];//B_end
@@ -254,14 +254,14 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             j++;
         }
 
-        /*std::cout << "°´BË³ĞòºÏ²¢ºó " << intervals.size() << "\n";
+        /*std::cout << "æŒ‰Bé¡ºåºåˆå¹¶å " << intervals.size() << "\n";
         for (int wr = 0; wr < intervals.size(); wr++)
         {
             std::cout << intervals[wr][0] << "\t" << intervals[wr][1] << "\t" << intervals[wr][2] << "\t" << intervals[wr][3] << "\t" << intervals[wr][4] << "\n";
         }
         */
         int pre;
-        //°´B²Ã¼ôÕıÄæ
+        //æŒ‰Bè£å‰ªæ­£é€†
         for (i = 0; i < intervals.size(); )
         {
             if (intervals[i][4] == 0)
@@ -269,18 +269,18 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                 j = i + 1;
                 while (j < intervals.size())
                 {
-                    if ((intervals[j][4] == 0) || (intervals[j][2] >= intervals[i][3])) //ÍêÈ«ÔÚºóÃæ
+                    if ((intervals[j][4] == 0) || (intervals[j][2] >= intervals[i][3])) //å®Œå…¨åœ¨åé¢
                         break;
-                    else if (intervals[j][3] <= intervals[i][3])//0°üº¬1,0·ÖÈı·Ö
+                    else if (intervals[j][3] <= intervals[i][3])//0åŒ…å«1,0åˆ†ä¸‰åˆ†
                     {
                         new_element = intervals[i];
-                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //°´B²Ã¼ôA
-                        intervals[i][3] = intervals[j][2]; //²Ã¼ôB
+                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][3] = intervals[j][2]; //è£å‰ªB
 
-                        new_element[0] = new_element[0] + intervals[j][3] - new_element[2]; //°´B²Ã¼ôA
-                        new_element[2] = intervals[j][3]; //²Ã¼ôB
+                        new_element[0] = new_element[0] + intervals[j][3] - new_element[2]; //æŒ‰Bè£å‰ªA
+                        new_element[2] = intervals[j][3]; //è£å‰ªB
 
-                        if ((new_element[3] - new_element[2]) > (intervals[i][3] - intervals[i][2]))//ºó³¤
+                        if ((new_element[3] - new_element[2]) > (intervals[i][3] - intervals[i][2]))//åé•¿
                         {
                             intervals.erase(intervals.begin() + i);
                             intervals.insert(intervals.begin() + j, new_element);
@@ -289,12 +289,12 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     }
                     else
                     {
-                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //°´B²Ã¼ôA
-                        intervals[i][3] = intervals[j][2]; //²Ã¼ôB
+                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][3] = intervals[j][2]; //è£å‰ªB
                         break;
                     }
                 }
-                //Ç°Ò»¸ö
+                //å‰ä¸€ä¸ª
                 pre = i - 1;
                 while (pre >= 0)
                 {
@@ -305,7 +305,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                 }
                 if ((pre >= 0) && (intervals[i][4] == 0) && (intervals[pre][4] == 1) && (intervals[i][2] < intervals[pre][3]))
                 {
-                    if (intervals[i][3] <= intervals[pre][3]) //1°üº¬0£¬É¾³ı0
+                    if (intervals[i][3] <= intervals[pre][3]) //1åŒ…å«0ï¼Œåˆ é™¤0
                     {
                         //intervals.erase(intervals.begin() + i);
                         //j--;
@@ -314,8 +314,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     }
                     else
                     {
-                        intervals[i][0] = intervals[i][0] + intervals[pre][3] - intervals[i][2]; //°´B²Ã¼ôA
-                        intervals[i][2] = intervals[pre][3]; //²Ã¼ôB
+                        intervals[i][0] = intervals[i][0] + intervals[pre][3] - intervals[i][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][2] = intervals[pre][3]; //è£å‰ªB
                     }
                 }
                 i = j;
@@ -324,23 +324,23 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             i++;
         }
         /*
-        std::ofstream ofs("C:/Users/ÖÜÍ¨/Desktop/1.txt", std::ios::binary | std::ios::out);
+        std::ofstream ofs("C:/Users/å‘¨é€š/Desktop/1.txt", std::ios::binary | std::ios::out);
 
-        ofs << "°´B²Ã¼ôÕıÄæºó0 " << intervals.size() << "\n";
+        ofs << "æŒ‰Bè£å‰ªæ­£é€†å0 " << intervals.size() << "\n";
         for (int wr = 0; wr < intervals.size(); wr++)
         {
             ofs << intervals[wr][0] << "\t" << intervals[wr][1] << "\t" << intervals[wr][2] << "\t" << intervals[wr][3] << "\t" << intervals[wr][4] << "\n";
         }
         ofs << " \n\n\n";
         */
-        //ĞŞ¸Ä¶ÔÓ¦µÄC_Strings
+        //ä¿®æ”¹å¯¹åº”çš„C_Strings
         for (i = 0, j = C_Strings.Subs.size() - 1; i < intervals.size(); )
         {
             if (intervals[i][4] == 0)
             {
                 if ((intervals[i][3] - intervals[i][2]) > thresh)
                 {
-                    //±£Áô
+                    //ä¿ç•™
                     while (true)
                     {
                         if (C_Strings.Subs[j].size() == 0)
@@ -364,11 +364,11 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                         intervals.erase(intervals.begin() + i);
                         C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                         j--;
-                        //É¾³ı
+                        //åˆ é™¤
                     }
                     else
                     {
-                        intervals[i][0] = C_Strings.Subs[j][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                        intervals[i][0] = C_Strings.Subs[j][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                         intervals[i][1] = C_Strings.Subs[j].back()[0] + C_Strings.Subs[j].back()[2];//A_end
                         intervals[i][2] = length - C_Strings.Subs[j].back()[1] - C_Strings.Subs[j].back()[2];//B_start
                         intervals[i][3] = length - C_Strings.Subs[j][0][1];//B_end
@@ -382,7 +382,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                             intervals.erase(intervals.begin() + i);
                             C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                             j--;
-                            //É¾³ı
+                            //åˆ é™¤
                         }
                     }
 
@@ -392,13 +392,13 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     intervals.erase(intervals.begin() + i);
                     C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                     j--;
-                    //É¾³ı
+                    //åˆ é™¤
                 }
             }
             else
                 i++;
         }
-        //°´[4]==1/2·Ö·ÇÍ¬Ô´Çø¼ä
+        //æŒ‰[4]==1/2åˆ†éåŒæºåŒºé—´
         quadras tmp;
         quadra start;
         bool tag_null = true;
@@ -443,7 +443,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     while (i < j)
                     {
                         if ((intervals[i][0] >= start[1]) && (intervals[i][1] <= start[0]))
-                            intervals[i][4] = 2;//¿ÉÒÔµ±ÔİÖ¹µã
+                            intervals[i][4] = 2;//å¯ä»¥å½“æš‚æ­¢ç‚¹
                         i++;
                     }
                     i = it;
@@ -474,11 +474,11 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         }
         quadras().swap(tmp);
 
-        std::vector<quadra>().swap(intervals);//Çå¿ÕÁË
+        std::vector<quadra>().swap(intervals);//æ¸…ç©ºäº†
     }
     else//+
     {
-        get_common_substrings_vector(C_Strings, common_substrings0, false, length);//ÕıµÄ¶à£¬¸ºµÄÉÙ
+        get_common_substrings_vector(C_Strings, common_substrings0, false, length);//æ­£çš„å¤šï¼Œè´Ÿçš„å°‘
         /*
         std::cout << "C_Strings " << C_Strings.Subs.size() << " " << C_Strings.sign << " " << C_Strings.add_len << "\n";
         for (int wr = 0; wr < C_Strings.Subs.size(); wr++)
@@ -494,7 +494,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         //std::cout << common_substrings.size() << "\t" << C_Strings.Subs.size() << "\t" << intervals.size() << " CCI\n";
 
 
-        //ÕûºÏÕıÄæ
+        //æ•´åˆæ­£é€†
         it = 0;
         i = C_Strings.Subs.size() - 1;
         j = 0;
@@ -506,8 +506,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             if (B_start0 <= B_start1)
             {
                 //std::cout << j << "\t" << i << "\t" << it << "   1\n";
-                intervals[it][4] = 0;//Ó²±È±êÊ¶ ¸ºµÄ
-                intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                intervals[it][4] = 0;//ç¡¬æ¯”æ ‡è¯† è´Ÿçš„
+                intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                 intervals[it][1] = C_Strings.Subs[i].back()[0] + C_Strings.Subs[i].back()[2];//A_end
                 intervals[it][2] = length - C_Strings.Subs[i].back()[1] - C_Strings.Subs[i].back()[2];//B_start
                 intervals[it][3] = length - C_Strings.Subs[i][0][1];//B_end
@@ -519,8 +519,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             else
             {
                 //std::cout << j << "\t" << i << "\t" << it << "   2\n";
-                intervals[it][4] = 1;// ÕıµÄ
-                intervals[it][0] = common_substrings[j][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                intervals[it][4] = 1;// æ­£çš„
+                intervals[it][0] = common_substrings[j][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                 intervals[it][1] = common_substrings[j][0] + common_substrings[j][2];//A_end
                 intervals[it][2] = common_substrings[j][1];//B_start
                 intervals[it][3] = common_substrings[j][1] + common_substrings[j][2];//B_end
@@ -530,24 +530,24 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             /*
             while (j < intervals.size())
             {
-                if (intervals[j][3] <= C_Si[2])//interval  Ä©¶Ë ÔÚ×ó±ß
+                if (intervals[j][3] <= C_Si[2])//interval  æœ«ç«¯ åœ¨å·¦è¾¹
                     ;
-                else if (intervals[j][3] > C_Si[2] && intervals[j][3] <= C_Si[3]) //interval  Ä©¶Ë ÔÚÖĞ¼ä
+                else if (intervals[j][3] > C_Si[2] && intervals[j][3] <= C_Si[3]) //interval  æœ«ç«¯ åœ¨ä¸­é—´
                 {
-                    if (intervals[j][2] >= C_Si[2]) //interval  Ê¼¶Ë ÔÚÖĞ¼ä
-                            intervals[j][4] = -1;//É¾µô
-                    else//interval  Ê¼¶Ë ÔÚ×ó±ß,  É¾³ıÓÒ²¿ÖØµş
+                    if (intervals[j][2] >= C_Si[2]) //interval  å§‹ç«¯ åœ¨ä¸­é—´
+                            intervals[j][4] = -1;//åˆ æ‰
+                    else//interval  å§‹ç«¯ åœ¨å·¦è¾¹,  åˆ é™¤å³éƒ¨é‡å 
                     {
                         intervals[j][3] = C_Si[2];
                         intervals[j][1] = C_Si[0];
                         intervals[j][1] = intervals[j][1] < intervals[j][0]? intervals[j][0]: intervals[j][1];
                     }
                 }
-                else//interval  Ä©¶Ë ÔÚÓÒ±ß
+                else//interval  æœ«ç«¯ åœ¨å³è¾¹
                 {
-                    if (intervals[j][2] >= C_Si[3]) //interval  Ê¼¶Ë ÔÚÓÒ±ß
+                    if (intervals[j][2] >= C_Si[3]) //interval  å§‹ç«¯ åœ¨å³è¾¹
                         break;
-                    else if (intervals[j][2] >= C_Si[2]) //interval  Ê¼¶Ë ÔÚÖĞ¼ä //É¾³ı×ó²¿ÖØµş
+                    else if (intervals[j][2] >= C_Si[2]) //interval  å§‹ç«¯ åœ¨ä¸­é—´ //åˆ é™¤å·¦éƒ¨é‡å 
                     {
                         intervals[j][2] = C_Si[3];
                         intervals[j][0] = C_Si[1];
@@ -555,7 +555,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
 
 
                     }
-                    else//interval  Ê¼¶Ë ÔÚ×ó±ß,  É¾³ıÁ½±ßÖØµş
+                    else//interval  å§‹ç«¯ åœ¨å·¦è¾¹,  åˆ é™¤ä¸¤è¾¹é‡å 
                     {
 
                     }
@@ -567,8 +567,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         while (i >= 0)
         {
             //std::cout << j << "\t" << i << "\t" << it << "   3\n";
-            intervals[it][4] = 0;//Ó²±È±êÊ¶ ¸ºµÄ
-            intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+            intervals[it][4] = 0;//ç¡¬æ¯”æ ‡è¯† è´Ÿçš„
+            intervals[it][0] = C_Strings.Subs[i][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
             intervals[it][1] = C_Strings.Subs[i].back()[0] + C_Strings.Subs[i].back()[2];//A_end
             intervals[it][2] = length - C_Strings.Subs[i].back()[1] - C_Strings.Subs[i].back()[2];//B_start
             intervals[it][3] = length - C_Strings.Subs[i][0][1];//B_end
@@ -578,8 +578,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         while (j < common_substrings.size())
         {
             //std::cout << j << "\t" << i << "\t" << it << "   4\n";
-            intervals[it][4] = 1;// ÕıµÄ
-            intervals[it][0] = common_substrings[j][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+            intervals[it][4] = 1;// æ­£çš„
+            intervals[it][0] = common_substrings[j][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
             intervals[it][1] = common_substrings[j][0] + common_substrings[j][2];//A_end
             intervals[it][2] = common_substrings[j][1];//B_start
             intervals[it][3] = common_substrings[j][1] + common_substrings[j][2];//B_end
@@ -587,14 +587,14 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             j++;
         }
         /*
-        std::cout << "°´BË³ĞòºÏ²¢ºó " << intervals.size() << "\n";
+        std::cout << "æŒ‰Bé¡ºåºåˆå¹¶å " << intervals.size() << "\n";
         for (int wr = 0; wr < intervals.size(); wr++)
         {
             std::cout << intervals[wr][0] << "\t" << intervals[wr][1] << "\t" << intervals[wr][2] << "\t" << intervals[wr][3] << "\t" << intervals[wr][4] << "\n";
         }*/
 
         int pre;
-        //°´B²Ã¼ôÕıÄæ
+        //æŒ‰Bè£å‰ªæ­£é€†
         for (i = 0; i < intervals.size(); )
         {
             if (intervals[i][4] == 0)
@@ -602,18 +602,18 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                 j = i + 1;
                 while (j < intervals.size())
                 {
-                    if ((intervals[j][4] == 0) || (intervals[j][2] >= intervals[i][3])) //ÍêÈ«ÔÚºóÃæ
+                    if ((intervals[j][4] == 0) || (intervals[j][2] >= intervals[i][3])) //å®Œå…¨åœ¨åé¢
                         break;
-                    else if (intervals[j][3] <= intervals[i][3])//0°üº¬1,0·ÖÈı·Ö
+                    else if (intervals[j][3] <= intervals[i][3])//0åŒ…å«1,0åˆ†ä¸‰åˆ†
                     {
                         new_element = intervals[i];
-                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //°´B²Ã¼ôA
-                        intervals[i][3] = intervals[j][2]; //²Ã¼ôB
+                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][3] = intervals[j][2]; //è£å‰ªB
 
-                        new_element[0] = new_element[0] + intervals[j][3] - new_element[2]; //°´B²Ã¼ôA
-                        new_element[2] = intervals[j][3]; //²Ã¼ôB
+                        new_element[0] = new_element[0] + intervals[j][3] - new_element[2]; //æŒ‰Bè£å‰ªA
+                        new_element[2] = intervals[j][3]; //è£å‰ªB
 
-                        if ((new_element[3] - new_element[2]) > (intervals[i][3] - intervals[i][2]))//ºó³¤
+                        if ((new_element[3] - new_element[2]) > (intervals[i][3] - intervals[i][2]))//åé•¿
                         {
                             intervals.erase(intervals.begin() + i);
                             intervals.insert(intervals.begin() + j, new_element);
@@ -622,12 +622,12 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     }
                     else
                     {
-                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //°´B²Ã¼ôA
-                        intervals[i][3] = intervals[j][2]; //²Ã¼ôB
+                        intervals[i][1] = intervals[i][1] - intervals[i][3] + intervals[j][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][3] = intervals[j][2]; //è£å‰ªB
                         break;
                     }
                 }
-                //Ç°Ò»¸ö
+                //å‰ä¸€ä¸ª
                 pre = i - 1;
                 while (pre >= 0)
                 {
@@ -638,7 +638,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                 }
                 if ((pre >= 0) && (intervals[i][4] == 0) && (intervals[pre][4] == 1) && (intervals[i][2] < intervals[pre][3]))
                 {
-                    if (intervals[i][3] <= intervals[pre][3]) //1°üº¬0£¬É¾³ı0
+                    if (intervals[i][3] <= intervals[pre][3]) //1åŒ…å«0ï¼Œåˆ é™¤0
                     {
                         //intervals.erase(intervals.begin() + i);
                         //j--;
@@ -647,8 +647,8 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     }
                     else
                     {
-                        intervals[i][0] = intervals[i][0] + intervals[pre][3] - intervals[i][2]; //°´B²Ã¼ôA
-                        intervals[i][2] = intervals[pre][3]; //²Ã¼ôB
+                        intervals[i][0] = intervals[i][0] + intervals[pre][3] - intervals[i][2]; //æŒ‰Bè£å‰ªA
+                        intervals[i][2] = intervals[pre][3]; //è£å‰ªB
                     }
                 }
                 i = j;
@@ -657,23 +657,23 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
             i++;
         }
         /*
-        std::ofstream ofs("C:/Users/ÖÜÍ¨/Desktop/1.txt", std::ios::binary | std::ios::out);
+        std::ofstream ofs("C:/Users/å‘¨é€š/Desktop/1.txt", std::ios::binary | std::ios::out);
 
-        ofs << "°´B²Ã¼ôÕıÄæºó0 " << intervals.size() << "\n";
+        ofs << "æŒ‰Bè£å‰ªæ­£é€†å0 " << intervals.size() << "\n";
         for (int wr = 0; wr < intervals.size(); wr++)
         {
             ofs << intervals[wr][0] << "\t" << intervals[wr][1] << "\t" << intervals[wr][2] << "\t" << intervals[wr][3] << "\t" << intervals[wr][4] << "\n";
         }
         ofs << " \n\n\n";
         */
-        //ĞŞ¸Ä¶ÔÓ¦µÄC_Strings
+        //ä¿®æ”¹å¯¹åº”çš„C_Strings
         for (i = 0, j = C_Strings.Subs.size() - 1; i < intervals.size(); )
         {
             if (intervals[i][4] == 0)
             {
                 if ((intervals[i][3] - intervals[i][2]) > thresh)
                 {
-                    //±£Áô
+                    //ä¿ç•™
                     while (true)
                     {
                         if (C_Strings.Subs[j].size() == 0)
@@ -697,11 +697,11 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                         intervals.erase(intervals.begin() + i);
                         C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                         j--;
-                        //É¾³ı
+                        //åˆ é™¤
                     }
                     else
                     {
-                        intervals[i][0] = C_Strings.Subs[j][0][0];//A_start   ×ó±ÕÓÒ¿ª¡¾£©
+                        intervals[i][0] = C_Strings.Subs[j][0][0];//A_start   å·¦é—­å³å¼€ã€ï¼‰
                         intervals[i][1] = C_Strings.Subs[j].back()[0] + C_Strings.Subs[j].back()[2];//A_end
                         intervals[i][2] = length - C_Strings.Subs[j].back()[1] - C_Strings.Subs[j].back()[2];//B_start
                         intervals[i][3] = length - C_Strings.Subs[j][0][1];//B_end
@@ -715,7 +715,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                             intervals.erase(intervals.begin() + i);
                             C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                             j--;
-                            //É¾³ı
+                            //åˆ é™¤
                         }
                     }
 
@@ -725,14 +725,14 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     intervals.erase(intervals.begin() + i);
                     C_Strings.Subs.erase(C_Strings.Subs.begin() + j);
                     j--;
-                    //É¾³ı
+                    //åˆ é™¤
                 }
             }
             else
                 i++;
         }
         /*
-        ofs << "°´B²Ã¼ôÕıÄæºó1 " << intervals.size() << "\n";
+        ofs << "æŒ‰Bè£å‰ªæ­£é€†å1 " << intervals.size() << "\n";
         for (int wr = 0; wr < intervals.size(); wr++)
         {
             ofs << intervals[wr][0] << "\t" << intervals[wr][1] << "\t" << intervals[wr][2] << "\t" << intervals[wr][3] << "\t" << intervals[wr][4] << "\n";
@@ -764,7 +764,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         ofs << "intervals " << num << "\n";
         */
 
-        //°´[4]==1/2·Ö·ÇÍ¬Ô´Çø¼ä
+        //æŒ‰[4]==1/2åˆ†éåŒæºåŒºé—´
         quadras tmp;
         quadra start;
         bool tag_null = true;
@@ -808,7 +808,7 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
                     while (i < j)
                     {
                         if ((intervals[i][0] >= start[1]) && (intervals[i][1] <= start[0]))
-                            intervals[i][4] = 2;//¿ÉÒÔµ±ÔİÖ¹µã
+                            intervals[i][4] = 2;//å¯ä»¥å½“æš‚æ­¢ç‚¹
                         i++;
                     }
                     i = it;
@@ -839,9 +839,9 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
         }
         quadras().swap(tmp);
 
-        std::vector<quadra>().swap(intervals);//Çå¿ÕÁË
+        std::vector<quadra>().swap(intervals);//æ¸…ç©ºäº†
         /*
-        ofs << "\n·ÇÍ¬Ô´Çø¼ä " << new_intervals.size() << "\n";
+        ofs << "\néåŒæºåŒºé—´ " << new_intervals.size() << "\n";
         for (int wr = 0; wr < new_intervals.size(); wr++)
         {
             ofs << wr << " " << new_intervals[wr].size() << "\n";
@@ -855,13 +855,13 @@ void star_alignment::StarAligner::hebing_substrings(Substrings& C_Strings, std::
     }
 }
 
-//ÒÀ¾İsufferTree½øĞĞË«±È£¬·µ»Øall_pairwise_gap
-//ÎŞĞè´«Èë£¬ÀàÒÑ¾­³õÊ¼»¯
-//·µ»Ø£¬Ë«ĞòÁĞ±È¶ÔµÃµ½µÄÁ½Á½gap£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸öÔªËØÓĞ³¤¶ÈÎª2µÄarray£¬Ã¿¸öÔªËØÊÇÓĞÈô¸É¸öInsertionµÄvector
+//ä¾æ®sufferTreeè¿›è¡ŒåŒæ¯”ï¼Œè¿”å›all_pairwise_gap
+//æ— éœ€ä¼ å…¥ï¼Œç±»å·²ç»åˆå§‹åŒ–
+//è¿”å›ï¼ŒåŒåºåˆ—æ¯”å¯¹å¾—åˆ°çš„ä¸¤ä¸¤gapï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªå…ƒç´ æœ‰é•¿åº¦ä¸º2çš„arrayï¼Œæ¯ä¸ªå…ƒç´ æ˜¯æœ‰è‹¥å¹²ä¸ªInsertionçš„vector
 void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, const suffix_array::SuffixArray<nucleic_acid_pseudo::NUMBER>& st,
     std::vector<std::array<std::vector<utils::Insertion>, 2>> &all_pairwise_gaps, std::vector<insert> &SNP_vector,int threshold1, int threshold2) const
 {
-    std::fstream io(arguments::out_file_name + "/NoN/" + std::to_string(i), std::ios::binary | std::ios::in | std::ios::out); //ÅĞ¶ÏÊäÈëÂ·¾¶ºÏ·¨·ñ
+    std::fstream io(arguments::out_file_name + "/NoN/" + std::to_string(i), std::ios::binary | std::ios::in | std::ios::out); //åˆ¤æ–­è¾“å…¥è·¯å¾„åˆæ³•å¦
     if (!io)
     {
         std::cout << "cannot access file " << arguments::out_file_name + "/NoN/" + std::to_string(i) << '\n';
@@ -874,7 +874,7 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
     insert a_gap;
     insert b_gap;
     quadras tmp;
-    unsigned char* array_A = NULL;   //0´ú±í·ÇÍ¬Ô´Çø¼ä  1´ú±íÕıÏòÈ«¾ÖÍ¬Ô´Çø¼ä ÒÔ¼° ÒÑ¾­±»Õ¼µÄ·ÇÍ¬Ô´  2´ú±íÄæÏòÍ¬Ô´Çø¼ä
+    unsigned char* array_A = NULL;   //0ä»£è¡¨éåŒæºåŒºé—´  1ä»£è¡¨æ­£å‘å…¨å±€åŒæºåŒºé—´ ä»¥åŠ å·²ç»è¢«å çš„éåŒæº  2ä»£è¡¨é€†å‘åŒæºåŒºé—´
     unsigned char* array_B = NULL;
     //std::cout << "----------------------- " << i << " " << _name[i] << " " << _lengths[i] << "------------------------\n";
     std::vector<triple> common_substrings;
@@ -891,15 +891,15 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
     }
     else if (_lengths[i] != 0)
     {
-        array_A = new unsigned char[_max_len];   //0´ú±í·ÇÍ¬Ô´Çø¼ä  1´ú±íÕıÏòÈ«¾ÖÍ¬Ô´Çø¼ä ÒÔ¼° ÒÑ¾­±»Õ¼µÄ·ÇÍ¬Ô´  2´ú±íÄæÏòÍ¬Ô´Çø¼ä
+        array_A = new unsigned char[_max_len];   //0ä»£è¡¨éåŒæºåŒºé—´  1ä»£è¡¨æ­£å‘å…¨å±€åŒæºåŒºé—´ ä»¥åŠ å·²ç»è¢«å çš„éåŒæº  2ä»£è¡¨é€†å‘åŒæºåŒºé—´
         array_B = new unsigned char[_max_len];
         memset(array_A, 1, _max_len);
         memset(array_B, 1, _max_len);
 
-        utils::read_BYTE_seq(io, veci);//¶ÁÈëiĞòÁĞ
-        _sequences[i].seq = utils::BLAST_PackDNA(veci);//Ğ´Èë_sequencesÖĞ
+        utils::read_BYTE_seq(io, veci);//è¯»å…¥iåºåˆ—
+        _sequences[i].seq = utils::BLAST_PackDNA(veci);//å†™å…¥_sequencesä¸­
         //std::cout << i << " " << _name[i] << " \nJaccardSimilarity\n";
-        const auto align_start = std::chrono::high_resolution_clock::now(); //¼ÇÂ¼±È¶ÔÆğÊ¼Ê±¼ä
+        const auto align_start = std::chrono::high_resolution_clock::now(); //è®°å½•æ¯”å¯¹èµ·å§‹æ—¶é—´
         bool similarity01 = utils::JaccardSimilarity(filter1, filter0, veci, _K);
         //std::cout << similarity01 << "\n";
         //std::cout << " consumes " << (std::chrono::high_resolution_clock::now() - align_start) << '\n';
@@ -921,7 +921,7 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
                 common_len0 += common_substrings0[j][2];
             //std::cout << common_len0 << " common_len0_back\n";
 
-            if (common_len0 > common_len1)//Ô¤²â´íÎó
+            if (common_len0 > common_len1)//é¢„æµ‹é”™è¯¯
             {
                 std::cout << "                    | Info : Prediction error! \n";
                 std::vector<triple>().swap(common_substrings0);
@@ -951,7 +951,7 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
                 common_len0 += common_substrings0[j][2];
             //std::cout << common_len0 << " common_len0\n";
 
-            if (common_len1 > common_len0)//Ô¤²â´íÎó
+            if (common_len1 > common_len0)//é¢„æµ‹é”™è¯¯
             {
                 //std::cout << " Prediction error! \n";
                 for (int zt = 0; zt < veci.size(); zt++)
@@ -968,11 +968,11 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
             }
         }
 
-        if (common_len0 > common_len1)//Äæ
+        if (common_len0 > common_len1)//é€†
         {
-            _sign[i] = false;//·ûºÅ-
+            _sign[i] = false;//ç¬¦å·-
             //common_substrings.swap(common_substrings0);
-            //ÕûºÏº¯Êı 0  
+            //æ•´åˆå‡½æ•° 0  
 
             std::vector<std::vector<triple>>().swap(C_String.Subs);
             std::vector<quadra>().swap(interval);
@@ -981,12 +981,12 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
 
             std::vector<triple>().swap(common_substrings);
             std::vector<triple>().swap(common_substrings0);
-            utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//Ğ´ÈëiĞòÁĞ
+            utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//å†™å…¥iåºåˆ—
             
             delete []_sequences[i].seq;
-            _sequences[i].seq = utils::BLAST_PackDNA(veci);//Ğ´Èë_sequencesÖĞ
+            _sequences[i].seq = utils::BLAST_PackDNA(veci);//å†™å…¥_sequencesä¸­
         }
-        else//Õı
+        else//æ­£
         {
             _sign[i] = true;
 
@@ -997,20 +997,20 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
 
             std::vector<triple>().swap(common_substrings);
             std::vector<triple>().swap(common_substrings0);
-            //ÕûºÏº¯Êı 1
+            //æ•´åˆå‡½æ•° 1
         }
 
-        std::vector<unsigned char>().swap(veci); //ÊÍ·Åveci
+        std::vector<unsigned char>().swap(veci); //é‡Šæ”¾veci
         //std::cout <<  _sequences[i].length <<"\n";
     }
     io.close();
     //std::cout << _sequences[0].length<< " "<< _sequences[i].length << "  length\n";
-    std::array<std::vector<utils::Insertion>, 2> pairwise_gaps; //¶¨Òå Ë«±Ègap
+    std::array<std::vector<utils::Insertion>, 2> pairwise_gaps; //å®šä¹‰ åŒæ¯”gap
     EmptySet();
 
     std::reverse_iterator<std::vector<std::vector<triple>>::iterator> C_Strer(C_String.Subs.rbegin());
     
-    for (size_t j = 0; j != intervals.size(); ++j)//0ºÍ2µÄÇø¼ä·µ»ØÓ²±ÈµÄgap¾ÍºÃ£¬Õ¹¿ªºóÄæ²¹±È¶Ôgap´æmore_gap
+    for (size_t j = 0; j != intervals.size(); ++j)//0å’Œ2çš„åŒºé—´è¿”å›ç¡¬æ¯”çš„gapå°±å¥½ï¼Œå±•å¼€åé€†è¡¥æ¯”å¯¹gapå­˜more_gap
     {
         //continue;/////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (intervals[j].size() == 1)
@@ -1020,13 +1020,13 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
             const int sequence_begin = intervals[j][0][2];
             const int sequence_end = intervals[j][0][3];
 
-            if (intervals[j][0][4] == 1)//Õı³£±È¶Ô
+            if (intervals[j][0][4] == 1)//æ­£å¸¸æ¯”å¯¹
             {
                 memset(array_A + centre_begin, 0, (centre_end - centre_begin) * sizeof(array_A[0]));
                 memset(array_B + sequence_begin, 0, (sequence_end - sequence_begin) * sizeof(array_B[0]));
                 //std::cout << centre_begin << " " << centre_end << " " << sequence_begin << " " << sequence_end << "  1\n";
-                auto [lhs_gaps, rhs_gaps] = new_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //·ÇÍ¬Ô´ÇøÓò£¬¶¯Ì¬¹æ»®±È¶Ô
-                    _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], false); //·ÖÖÎµ½±ÈthreshĞ¡£¬È»ºók-band
+                auto [lhs_gaps, rhs_gaps] = new_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //éåŒæºåŒºåŸŸï¼ŒåŠ¨æ€è§„åˆ’æ¯”å¯¹
+                    _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], false); //åˆ†æ²»åˆ°æ¯”threshå°ï¼Œç„¶åk-band
                 int an = 0, bn = 0;
                 for (int ii = 0; ii < lhs_gaps.size(); ii++)
                 {
@@ -1049,16 +1049,16 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
                 insert().swap(rhs_gaps);
                 //std::cout << centre_begin << " " << centre_end << " " << sequence_begin << " " << sequence_end << "  1\n";
             }
-            else if (intervals[j][0][4] == 2)//Ó²±È
+            else if (intervals[j][0][4] == 2)//ç¡¬æ¯”
             {
 
                 memset(array_A + centre_begin, 2, (centre_end - centre_begin) * sizeof(array_A[0]));
                 memset(array_B + sequence_begin, 2, (sequence_end - sequence_begin) * sizeof(array_B[0]));
                 //std::cout << centre_begin << " " << centre_end << " " << sequence_begin << " " << sequence_end << " 2\n";
-                //ÕâÀïÖ±½Ó´¦ÀíÕıÏòÓ²±È
+                //è¿™é‡Œç›´æ¥å¤„ç†æ­£å‘ç¡¬æ¯”
                 insert lhs_gaps;
                 insert rhs_gaps;
-                if ((sequence_end - sequence_begin) < (centre_end - centre_begin)) //ÖĞĞÄ³¤
+                if ((sequence_end - sequence_begin) < (centre_end - centre_begin)) //ä¸­å¿ƒé•¿
                 {
                     rhs_gaps.push_back(in(sequence_end, centre_end - centre_begin - sequence_end + sequence_begin));
                     for (int ii = 0; ii < rhs_gaps.size(); ii++)
@@ -1085,7 +1085,7 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
                 /*std::cout << C_Strer - C_String.Subs.rbegin() << " " << C_String.Subs.size() << " 2 C_Strer\n";
                 if (C_Strer - C_String.Subs.rbegin() > 22)
                     exit(0);*/
-                    //´«Èëº¯Êı´¦ÀíÄæ²¹
+                    //ä¼ å…¥å‡½æ•°å¤„ç†é€†è¡¥
                 nibu_Align(kband, _sequences[_centre], _sequences[i], threshold2, C_Strer, SNP_vector[i], _more_gap[i], intervals[j][0]);
                 //std::cout << centre_begin << " " << centre_end << " " << sequence_begin << " " << sequence_end << "  2\n";
             }
@@ -1120,8 +1120,8 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
             if (C_Strer+ intervals[j].size() - C_String.Subs.rbegin() > 21)
                 exit(0);
                 */
-            auto [lhs_gaps, rhs_gaps] = new_mul_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //·ÇÍ¬Ô´ÇøÓò£¬¶¯Ì¬¹æ»®±È¶Ô
-                _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], intervals[j], C_Strer); //·ÖÖÎµ½±ÈthreshĞ¡£¬È»ºók-band
+            auto [lhs_gaps, rhs_gaps] = new_mul_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //éåŒæºåŒºåŸŸï¼ŒåŠ¨æ€è§„åˆ’æ¯”å¯¹
+                _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], intervals[j], C_Strer); //åˆ†æ²»åˆ°æ¯”threshå°ï¼Œç„¶åk-band
             int an = 0, bn = 0;
             for (int ii = 0; ii < lhs_gaps.size(); ii++)
             {
@@ -1158,14 +1158,14 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
             //std::ofstream ofsv(_MAFinfo.path + std::to_string(name_i) + ".maf", std::ios::binary | std::ios::out);
             //std::ofstream ofii(_MAFinfo.path + std::to_string(name_i) + ".tmp", std::ios::binary | std::ios::out);
             {
-                std::lock_guard<std::mutex> lock(threadPool0->mutex_ns); // ÔÚ·ÃÎÊ¹²Ïí±äÁ¿Ö®Ç°¼ÓËø
+                std::lock_guard<std::mutex> lock(threadPool0->mutex_ns); // åœ¨è®¿é—®å…±äº«å˜é‡ä¹‹å‰åŠ é”
                 utils::read_N_tmp(ns, _N_gap[i], i);
             }
 
             const auto align_start = std::chrono::high_resolution_clock::now();
             //std::cout << chains.size() << " " << chains0.size() << " chains size\n";
             
-            getSV_write2file(pairwise_gaps, kband, ofi, i, chains, chains0, array_A, array_B);//Ğ´Èësv //ÄÚ²¿½øĞĞÒÔÏÂ×ª»»µÄNgap²Ù×÷
+            getSV_write2file(pairwise_gaps, kband, ofi, i, chains, chains0, array_A, array_B);//å†™å…¥sv //å†…éƒ¨è¿›è¡Œä»¥ä¸‹è½¬æ¢çš„Ngapæ“ä½œ
             
             //ofsv.close();
             //std::cout << "getSV consumes " << (std::chrono::high_resolution_clock::now() - align_start) << '\n';
@@ -1178,8 +1178,8 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
             std::vector<utils::more_block> more_gap(2);
             //ni_seq
             ni_seq[1] = maf_bin_to_vector(_sequences[i]);
-            delete []_sequences[i].seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            _sequences[i].length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []_sequences[i].seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            _sequences[i].length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             ni_seq[0] = maf_bin_to_vector(_sequences[_centre]);
             //N_insertions
             N_insertions[0] = _N_gap[_centre];
@@ -1212,19 +1212,19 @@ void star_alignment::StarAligner::mul_sv_maf_func(int i, std::ifstream &ns, cons
     for (size_t j = 0; j < pairwise_gaps[0].size();)
     {
         if (pairwise_gaps[0][j].number == 0)
-            pairwise_gaps[0].erase(pairwise_gaps[0].begin() + j);  // É¾³ıºóÃæµÄ Insertion
+            pairwise_gaps[0].erase(pairwise_gaps[0].begin() + j);  // åˆ é™¤åé¢çš„ Insertion
         else
             j++;
     }
     for (size_t j = 0; j < pairwise_gaps[1].size();)
     {
         if (pairwise_gaps[1][j].number == 0)
-            pairwise_gaps[1].erase(pairwise_gaps[1].begin() + j);  // É¾³ıºóÃæµÄ Insertion
+            pairwise_gaps[1].erase(pairwise_gaps[1].begin() + j);  // åˆ é™¤åé¢çš„ Insertion
         else
             j++;
     }
     delete kband;
-    all_pairwise_gaps[i].swap(pairwise_gaps); //Ñ­»·Ò»´Îºó£¬¼ÓÈëÒ»×éË«±È
+    all_pairwise_gaps[i].swap(pairwise_gaps); //å¾ªç¯ä¸€æ¬¡åï¼ŒåŠ å…¥ä¸€ç»„åŒæ¯”
     EmptySet();
 }
 
@@ -1237,7 +1237,7 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
     insert a_gap;
     insert b_gap;
     Kband* kband = new Kband();
-    std::fstream io(arguments::out_file_name + "/NoN/" + std::to_string(i), std::ios::binary | std::ios::in | std::ios::out); //ÅĞ¶ÏÊäÈëÂ·¾¶ºÏ·¨·ñ
+    std::fstream io(arguments::out_file_name + "/NoN/" + std::to_string(i), std::ios::binary | std::ios::in | std::ios::out); //åˆ¤æ–­è¾“å…¥è·¯å¾„åˆæ³•å¦
     if (!io)
     {
         std::cout << "cannot access file " << arguments::out_file_name + "/NoN/" + std::to_string(i) << '\n';
@@ -1253,10 +1253,10 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
     else if (_lengths[i] != 0)
     {
         utils::read_BYTE_seq(io, veci);
-        _sequences[i].seq = utils::BLAST_PackDNA(veci);//Ğ´Èë_sequencesÖĞ
+        _sequences[i].seq = utils::BLAST_PackDNA(veci);//å†™å…¥_sequencesä¸­
 
         //std::cout << i << " " << _name[i] << "JaccardSimilarity\n";
-        const auto align_start = std::chrono::high_resolution_clock::now(); //¼ÇÂ¼±È¶ÔÆğÊ¼Ê±¼ä
+        const auto align_start = std::chrono::high_resolution_clock::now(); //è®°å½•æ¯”å¯¹èµ·å§‹æ—¶é—´
 
         bool similarity01 = utils::JaccardSimilarity(filter1, filter0, veci, _K);
         //std::cout << similarity01 << "\n";
@@ -1265,14 +1265,14 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
         //{
         if (similarity01)//++++++++++++++
         {
-            _sign[i] = true;//·ûºÅ+
+            _sign[i] = true;//ç¬¦å·+
             common_substrings = _optimal_path(st.get_common_substrings(veci.cbegin(), veci.cend(), threshold1, true)); //common_substrings [A.index,B.index,length]
             common_len = 0;
 
             for (int j = 0; j < common_substrings.size(); j++)
                 common_len += common_substrings[j][2];
             //std::cout << common_len << " common_len1\n";
-            if (common_len < veci.size() / 3)//ĞèÒªÈ¡Äæ²¹´® 100000 - 10
+            if (common_len < veci.size() / 3)//éœ€è¦å–é€†è¡¥ä¸² 100000 - 10
             {
                 for (int zt = 0; zt < veci.size(); zt++)
                     veci[zt] = 3 - veci[zt];
@@ -1287,29 +1287,29 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
 
                 if (common_len >= common_len0)//+++++++++++++
                 {
-                    _sign[i] = true;//·ûºÅ+
+                    _sign[i] = true;//ç¬¦å·+
                     std::vector<triple>().swap(common_substrings0);
                 }
                 else//-----------------
                 {
-                    _sign[i] = false;//·ûºÅ-
+                    _sign[i] = false;//ç¬¦å·-
                     std::vector<triple>().swap(common_substrings);
                     common_substrings.swap(common_substrings0);
-                    utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//ÎÄ¼şĞ´ÈëiĞòÁĞ
+                    utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//æ–‡ä»¶å†™å…¥iåºåˆ—
                     delete[]_sequences[i].seq;
-                    _sequences[i].seq = utils::BLAST_PackDNA(veci);//ÖØĞÂĞ´Èë_sequencesÖĞ
+                    _sequences[i].seq = utils::BLAST_PackDNA(veci);//é‡æ–°å†™å…¥_sequencesä¸­
                 }
             }
         }
         else//-----------------------------------
         {
-            _sign[i] = false;//·ûºÅ-
+            _sign[i] = false;//ç¬¦å·-
             for (int zt = 0; zt < veci.size(); zt++)
                 veci[zt] = 3 - veci[zt];
             std::reverse(veci.begin(), veci.end());
-            utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//ÎÄ¼şĞ´ÈëiĞòÁĞ  ---
+            utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//æ–‡ä»¶å†™å…¥iåºåˆ—  ---
             delete[]_sequences[i].seq;
-            _sequences[i].seq = utils::BLAST_PackDNA(veci);//ÖØĞÂĞ´Èë_sequencesÖĞ   ---
+            _sequences[i].seq = utils::BLAST_PackDNA(veci);//é‡æ–°å†™å…¥_sequencesä¸­   ---
 
             common_substrings = _optimal_path(st.get_common_substrings(veci.cbegin(), veci.cend(), threshold1, true)); //common_substrings [A.index,B.index,length]
             common_len = 0;
@@ -1318,9 +1318,9 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
                 common_len += common_substrings[j][2];
             //std::cout << common_len << " common_len0\n";
 
-            if (common_len < veci.size() / 3)//ĞèÒªÈ¡Äæ²¹´® 100000 - 10
+            if (common_len < veci.size() / 3)//éœ€è¦å–é€†è¡¥ä¸² 100000 - 10
             {
-                for (int zt = 0; zt < veci.size(); zt++) //Õı»ØÀ´
+                for (int zt = 0; zt < veci.size(); zt++) //æ­£å›æ¥
                     veci[zt] = 3 - veci[zt];
                 std::reverse(veci.begin(), veci.end());
 
@@ -1333,17 +1333,17 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
 
                 if (common_len >= common_len0)//-------------
                 {
-                    _sign[i] = false;//·ûºÅ-
+                    _sign[i] = false;//ç¬¦å·-
                     std::vector<triple>().swap(common_substrings0);
                 }
                 else//++++++++++++++++++++
                 {
-                    _sign[i] = true;//·ûºÅ+
+                    _sign[i] = true;//ç¬¦å·+
                     std::vector<triple>().swap(common_substrings);
                     common_substrings.swap(common_substrings0);
-                    utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//ÎÄ¼şĞ´ÈëiĞòÁĞ
+                    utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//æ–‡ä»¶å†™å…¥iåºåˆ—
                     delete[]_sequences[i].seq;
-                    _sequences[i].seq = utils::BLAST_PackDNA(veci);//ÖØĞÂĞ´Èë_sequencesÖĞ
+                    _sequences[i].seq = utils::BLAST_PackDNA(veci);//é‡æ–°å†™å…¥_sequencesä¸­
                 }
 
             }
@@ -1353,17 +1353,17 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
         {
             if (!similarity01)
             {
-                _sign[i] = false;//·ûºÅ-
+                _sign[i] = false;//ç¬¦å·-
                 for (int zt = 0; zt < veci.size(); zt++)
                     veci[zt] = 3 - veci[zt];
                 std::reverse(veci.begin(), veci.end());
-                utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//ÎÄ¼şĞ´ÈëiĞòÁĞ  ---
+                utils::write_BYTE_seq(io, veci, _name[i].size() + 2, _TU[i]);//æ–‡ä»¶å†™å…¥iåºåˆ—  ---
                 delete[]_sequences[i].seq;
-                _sequences[i].seq = utils::BLAST_PackDNA(veci);//ÖØĞÂĞ´Èë_sequencesÖĞ   ---
+                _sequences[i].seq = utils::BLAST_PackDNA(veci);//é‡æ–°å†™å…¥_sequencesä¸­   ---
             }
             std::vector<triple>().swap(common_substrings);
         }*/
-        std::vector<unsigned char>().swap(veci); //ÊÍ·Åveci
+        std::vector<unsigned char>().swap(veci); //é‡Šæ”¾veci
        
     }
     
@@ -1401,7 +1401,7 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
     std::vector<triple>().swap(common_substrings);
     EmptySet();
 
-    std::array<std::vector<utils::Insertion>, 2> pairwise_gaps; //¶¨Òå Ë«±Ègap
+    std::array<std::vector<utils::Insertion>, 2> pairwise_gaps; //å®šä¹‰ åŒæ¯”gap
     int jindu = 0;
     //std::cout << "\n NeedlemanWunshReusable:::begin\n";
 
@@ -1412,8 +1412,8 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
         const size_t sequence_begin = intervals[j][2];
         const size_t sequence_end = intervals[j][3];
 
-        auto [lhs_gaps, rhs_gaps] = new_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //·ÇÍ¬Ô´ÇøÓò£¬¶¯Ì¬¹æ»®±È¶Ô
-            _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], false); //·ÖÖÎµ½±ÈthreshĞ¡£¬È»ºók-band
+        auto [lhs_gaps, rhs_gaps] = new_main_Align(kband, _sequences[_centre], centre_begin, centre_end,  //éåŒæºåŒºåŸŸï¼ŒåŠ¨æ€è§„åˆ’æ¯”å¯¹
+            _sequences[i], sequence_begin, sequence_end, threshold2, SNP_vector[i], _mg_tag, _more_gap[i], false); //åˆ†æ²»åˆ°æ¯”threshå°ï¼Œç„¶åk-band
 
         for (int ii = 0; ii < lhs_gaps.size(); ii++)
         {
@@ -1437,7 +1437,7 @@ void star_alignment::StarAligner::mul_fasta_func(int i, const suffix_array::Suff
     if (i != _centre)
         delete[]_sequences[i].seq;
     std::vector<quadra>().swap(intervals);
-    all_pairwise_gaps[i].swap(pairwise_gaps); //Ñ­»·Ò»´Îºó£¬¼ÓÈëÒ»×éË«±È
+    all_pairwise_gaps[i].swap(pairwise_gaps); //å¾ªç¯ä¸€æ¬¡åï¼ŒåŠ å…¥ä¸€ç»„åŒæ¯”
     EmptySet();
     return;
 }
@@ -1446,13 +1446,13 @@ auto star_alignment::StarAligner::mul_sv_maf_pairwise_align(int threshold1, int 
 {
     cout_cur_time();
     std::cout << "Start: build Suffix Array No." << _centre << "\n";
-    suffix_array::SuffixArray<nucleic_acid_pseudo::NUMBER> st(_sequences[_centre], 0, _sequences[_centre].length, nucleic_acid_pseudo::end_mark);//ÊµÀı»¯ºó×ºÊ÷¶ÔÏóst£¬±È¶ÔÍ¬Ô´ÇøÓò
+    suffix_array::SuffixArray<nucleic_acid_pseudo::NUMBER> st(_sequences[_centre], 0, _sequences[_centre].length, nucleic_acid_pseudo::end_mark);//å®ä¾‹åŒ–åç¼€æ ‘å¯¹è±¡stï¼Œæ¯”å¯¹åŒæºåŒºåŸŸ
     cout_cur_time();
     std::cout << "End  : build Suffix Array" << "\n";
-    std::vector<std::array<std::vector<utils::Insertion>, 2>> all_pairwise_gaps(_row); //¶¨Òå±äÁ¿-½ÓÊÕ½á¹û
+    std::vector<std::array<std::vector<utils::Insertion>, 2>> all_pairwise_gaps(_row); //å®šä¹‰å˜é‡-æ¥æ”¶ç»“æœ
     std::vector<insert> SNP_vector(_row);
     init_scores70();
-    std::ifstream ns(arguments::N_file_name, std::ios::binary | std::ios::in); //ÅĞ¶ÏN_file_nameºÏ·¨·ñ
+    std::ifstream ns(arguments::N_file_name, std::ios::binary | std::ios::in); //åˆ¤æ–­N_file_nameåˆæ³•å¦
     if (!ns)
     {
         std::cout << "cannot access file " << arguments::in_file_name << '\n';
@@ -1473,18 +1473,18 @@ auto star_alignment::StarAligner::mul_sv_maf_pairwise_align(int threshold1, int 
     EmptySet();
     ns.close();
 
-    return std::move(all_pairwise_gaps); //Ë«ĞòÁĞ±È¶ÔµÃµ½µÄÁ½Á½gap£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸öÔªËØÓĞ³¤¶ÈÎª2µÄarray£¬Ã¿¸öÔªËØÊÇÓĞÈô¸É¸öInsertionµÄvector
+    return std::move(all_pairwise_gaps); //åŒåºåˆ—æ¯”å¯¹å¾—åˆ°çš„ä¸¤ä¸¤gapï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªå…ƒç´ æœ‰é•¿åº¦ä¸º2çš„arrayï¼Œæ¯ä¸ªå…ƒç´ æ˜¯æœ‰è‹¥å¹²ä¸ªInsertionçš„vector
 }
 
 auto star_alignment::StarAligner::mul_pairwise_align(int threshold1, int threshold2) const -> std::vector<std::array<std::vector<utils::Insertion>, 2>>
 {
     cout_cur_time();
     std::cout << "Start: build Suffix Array No." << _centre << "\n";
-    suffix_array::SuffixArray<nucleic_acid_pseudo::NUMBER> st(_sequences[_centre], 0, _sequences[_centre].length, nucleic_acid_pseudo::end_mark);//ÊµÀı»¯ºó×ºÊ÷¶ÔÏóst£¬±È¶ÔÍ¬Ô´ÇøÓò
-    //size_t peakMem2 = get_peak_memory(); // »ñÈ¡±»²âÊÔ´úÂëÖ´ĞĞºóµ±Ç°½ø³ÌµÄÄÚ´æÕ¼ÓÃ·åÖµ
+    suffix_array::SuffixArray<nucleic_acid_pseudo::NUMBER> st(_sequences[_centre], 0, _sequences[_centre].length, nucleic_acid_pseudo::end_mark);//å®ä¾‹åŒ–åç¼€æ ‘å¯¹è±¡stï¼Œæ¯”å¯¹åŒæºåŒºåŸŸ
+    //size_t peakMem2 = get_peak_memory(); // è·å–è¢«æµ‹è¯•ä»£ç æ‰§è¡Œåå½“å‰è¿›ç¨‹çš„å†…å­˜å ç”¨å³°å€¼
     cout_cur_time();
     std::cout << "End  : build Suffix Array" << "\n";
-    std::vector<std::array<std::vector<utils::Insertion>, 2>> all_pairwise_gaps(_row); //¶¨Òå±äÁ¿-½ÓÊÕ½á¹û
+    std::vector<std::array<std::vector<utils::Insertion>, 2>> all_pairwise_gaps(_row); //å®šä¹‰å˜é‡-æ¥æ”¶ç»“æœ
     std::vector<insert> SNP_vector(_row);
     cout_cur_time();
     std::cout << "Start: pairwise sequence alignment\n";
@@ -1497,11 +1497,11 @@ auto star_alignment::StarAligner::mul_pairwise_align(int threshold1, int thresho
     std::cout << "End  : pairwise sequence alignment\n";
     //ns.close();
     
-    return std::move(all_pairwise_gaps); //Ë«ĞòÁĞ±È¶ÔµÃµ½µÄÁ½Á½gap£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸öÔªËØÓĞ³¤¶ÈÎª2µÄarray£¬Ã¿¸öÔªËØÊÇÓĞÈô¸É¸öInsertionµÄvector
+    return std::move(all_pairwise_gaps); //åŒåºåˆ—æ¯”å¯¹å¾—åˆ°çš„ä¸¤ä¸¤gapï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªå…ƒç´ æœ‰é•¿åº¦ä¸º2çš„arrayï¼Œæ¯ä¸ªå…ƒç´ æ˜¯æœ‰è‹¥å¹²ä¸ªInsertionçš„vector
 }
 
 
-//ÇóÈ¡sv£¬É¸Ñ¡²¢Êä³öµ½ÎÄ¼ş
+//æ±‚å–svï¼Œç­›é€‰å¹¶è¾“å‡ºåˆ°æ–‡ä»¶
 void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils::Insertion>, 2>& pairwise_gaps, Kband* kband, std::ofstream& ofsv, int seq_i, std::vector <std::vector<quadra>>& chains, std::vector <std::vector<quadra>>& chains0, unsigned char* array_A, unsigned char* array_B)const
 {
     unsigned int* Fasta_Center = utils::insert_fasta01(pairwise_gaps, _lengths[_centre]);
@@ -1542,11 +1542,11 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
     {
         jn = j0 = nsum1 = nsum2 = 0;
         pre_jn = pre_nsum2 = pre_start2 = 0;
-        // Ô­´® chains
+        // åŸä¸² chains
         for (int i = 0; i < chains.size(); i++)
         {
             auto& intervals = chains[i];
-            //ÅĞ¶ÏÊÇ·ñ1-n£¬n-1£¬ÖØµşÂÊĞ¡ÓÚ10%£¬Ì°ĞÄ£¬Ôò¼ÓÈë£¬·ñÔò£¬continue
+            //åˆ¤æ–­æ˜¯å¦1-nï¼Œn-1ï¼Œé‡å ç‡å°äº10%ï¼Œè´ªå¿ƒï¼Œåˆ™åŠ å…¥ï¼Œå¦åˆ™ï¼Œcontinue
             if (!(AB_exist(Fasta_Center, array_A, array_B, intervals[0][0], intervals.back()[1], intervals[0][2], intervals.back()[3])))
                 continue;
                 //here
@@ -1568,7 +1568,7 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
                 //std::cout << intervals[j][0] << " " << intervals[j][1] << " " << intervals[j][2] << " " << intervals[j][3] << " \n";
                 
                 auto [agap_, bgap_] = BWT_MINI::BWT_mini(kband, A, intervals[j][0]- more_gap_i.start1, intervals[j][1] -more_gap_i.start1,
-                    B, intervals[j][2]-more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwt±ä»»Çó
+                    B, intervals[j][2]-more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwtå˜æ¢æ±‚
                 more_gap_i.gap1.insert(more_gap_i.gap1.end(), agap_.cbegin(), agap_.cend());
                 more_gap_i.gap2.insert(more_gap_i.gap2.end(), bgap_.cbegin(), bgap_.cend());
                 
@@ -1576,11 +1576,11 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             //std::cout << intervals[0][0] << " " << intervals[0][1] << "+  BWT_mini finish\n";
             std::vector<quadra>().swap(chains[i]);
             sequences[0] = maf_bin_to_vector(A);
-            delete []A.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            A.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []A.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            A.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             sequences[1] = maf_bin_to_vector(B);
-            delete []B.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            B.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []B.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            B.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             //std::cout << "+  maf_bin_to_vector all finish\n";
 
             j0 = nsum1 = 0;
@@ -1607,16 +1607,16 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             std::vector<std::tuple<int, int>>().swap(more_gap_i.gap2);
         }
         //std::cout << "+  finish\n";
-        //Ô­´®È¡·´£¬_N_gapÁíÓÃÈİÆ÷´æÖü
+        //åŸä¸²å–åï¼Œ_N_gapå¦ç”¨å®¹å™¨å­˜è´®
         std::vector<utils::Insertion> N_gap_tmp(_N_gap[seq_i].size());
-        for (int p = 0; p < _N_gap[seq_i].size(); p++)//N_insertion ¸Ä±ä
+        for (int p = 0; p < _N_gap[seq_i].size(); p++)//N_insertion æ”¹å˜
         {
             N_gap_tmp[_N_gap[seq_i].size() - p - 1].index = _lengths[seq_i] - _N_gap[seq_i][p].index;
             N_gap_tmp[_N_gap[seq_i].size() - p - 1].number = _N_gap[seq_i][p].number;
         }
         sign[1] = !sign[1];
         //std::cout << "+ 2 - finish\n";
-        // ·´´® chains0
+        // åä¸² chains0
         jn = j0 = nsum1 = nsum2 = 0;
         pre_jn = pre_nsum2 = pre_start2 = 0;
         for (int i = 0; i < chains0.size(); i++)
@@ -1638,7 +1638,7 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             for (size_t j = 1; j < intervals.size() - 1; ++j)
             {
                 auto [agap_, bgap_] = BWT_MINI::BWT_mini(kband, A, intervals[j][0] - more_gap_i.start1, intervals[j][1] - more_gap_i.start1,
-                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwt±ä»»Çó
+                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwtå˜æ¢æ±‚
                 more_gap_i.gap1.insert(more_gap_i.gap1.end(), agap_.cbegin(), agap_.cend());
                 more_gap_i.gap2.insert(more_gap_i.gap2.end(), bgap_.cbegin(), bgap_.cend());
             }
@@ -1646,11 +1646,11 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             std::vector<quadra>().swap(chains0[i]);
             
             sequences[0] = maf_bin_to_vector(A);
-            delete []A.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            A.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []A.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            A.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             sequences[1] = maf_bin_to_vector(B);
-            delete []B.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            B.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []B.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            B.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             //std::cout << "-  maf_bin_to_vector all finish\n";
 
             j0 = nsum1 = 0;
@@ -1690,7 +1690,7 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
         //test_end
 
         std::vector<utils::Insertion> N_gap_tmp(_N_gap[seq_i].size());
-        for (int p = 0; p < _N_gap[seq_i].size(); p++)//N_insertion ¸Ä±ä
+        for (int p = 0; p < _N_gap[seq_i].size(); p++)//N_insertion æ”¹å˜
         {
             N_gap_tmp[_N_gap[seq_i].size() - p - 1].index = _lengths[seq_i] - _N_gap[seq_i][p].index;
             N_gap_tmp[_N_gap[seq_i].size() - p - 1].number = _N_gap[seq_i][p].number;
@@ -1701,7 +1701,7 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
 
         jn = j0 = nsum1 = nsum2 = 0;
         pre_jn = pre_nsum2 = pre_start2 = 0;
-        // Ô­´® chains0
+        // åŸä¸² chains0
         for (int i = 0; i < chains0.size(); i++)
         {
             auto& intervals = chains0[i];
@@ -1720,18 +1720,18 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             for (size_t j = 1; j < intervals.size() - 1; ++j)
             {
                 auto [agap_, bgap_] = BWT_MINI::BWT_mini(kband, A, intervals[j][0] - more_gap_i.start1, intervals[j][1] - more_gap_i.start1,
-                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwt±ä»»Çó
+                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwtå˜æ¢æ±‚
                 more_gap_i.gap1.insert(more_gap_i.gap1.end(), agap_.cbegin(), agap_.cend());
                 more_gap_i.gap2.insert(more_gap_i.gap2.end(), bgap_.cbegin(), bgap_.cend());
             }
             std::vector<quadra>().swap(chains0[i]);
 
             sequences[0] = maf_bin_to_vector(A);
-            delete []A.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            A.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []A.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            A.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             sequences[1] = maf_bin_to_vector(B);
-            delete []B.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            B.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []B.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            B.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
 
 
             j0 = nsum1 = 0;
@@ -1758,10 +1758,10 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
         }
         //ofsv.close();
         //exit(6);
-        //Ô­´®È¡·´£¬_N_gapz×Ô±ä
+        //åŸä¸²å–åï¼Œ_N_gapzè‡ªå˜
         sign[1] = !sign[1];
 
-        // ·´´® chains
+        // åä¸² chains
         jn = j0 = nsum1 = nsum2 = 0;
         pre_jn = pre_nsum2 = pre_start2 = 0;
         for (int i = 0; i < chains.size(); i++)
@@ -1782,18 +1782,18 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
             for (size_t j = 1; j < intervals.size() - 1; ++j)
             {
                 auto [agap_, bgap_] = BWT_MINI::BWT_mini(kband, A, intervals[j][0] - more_gap_i.start1, intervals[j][1] - more_gap_i.start1,
-                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwt±ä»»Çó
+                    B, intervals[j][2] - more_gap_i.start2, intervals[j][3] - more_gap_i.start2, 10000, SNP); //MINI bwtå˜æ¢æ±‚
                 more_gap_i.gap1.insert(more_gap_i.gap1.end(), agap_.cbegin(), agap_.cend());
                 more_gap_i.gap2.insert(more_gap_i.gap2.end(), bgap_.cbegin(), bgap_.cend());
             }
             std::vector<quadra>().swap(chains[i]);
 
             sequences[0] = maf_bin_to_vector(A);
-            delete []A.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            A.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []A.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            A.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
             sequences[1] = maf_bin_to_vector(B);
-            delete []B.seq;//ÊÍ·Åµ±Ç°ĞòÁĞi
-            B.length = 0;//ÊÍ·Åµ±Ç°ĞòÁĞi
+            delete []B.seq;//é‡Šæ”¾å½“å‰åºåˆ—i
+            B.length = 0;//é‡Šæ”¾å½“å‰åºåˆ—i
 
 
             j0 = nsum1 = 0;
@@ -1826,8 +1826,8 @@ void star_alignment::StarAligner::getSV_write2file(std::array<std::vector<utils:
     delete[] Fasta_Center;
 }
 
-//·ÖÁ½²½ĞÂ¸Ä,µÚÒ»²½£¬´Ó´«ÈëÈ«²¿µÄÍ¬Ô´Çø¶Î£¬[[A.index£¬B.index£¬length]...]£¬Ã¿¸öB.indexÑ¡³öÒ»¸öA.index£¬Ïà¶Ô¾àÀë×î½ü
-auto star_alignment::StarAligner::_MultiReg(const std::vector<triple>& common_substrings) //×îÓÅÂ·¾¶
+//åˆ†ä¸¤æ­¥æ–°æ”¹,ç¬¬ä¸€æ­¥ï¼Œä»ä¼ å…¥å…¨éƒ¨çš„åŒæºåŒºæ®µï¼Œ[[A.indexï¼ŒB.indexï¼Œlength]...]ï¼Œæ¯ä¸ªB.indexé€‰å‡ºä¸€ä¸ªA.indexï¼Œç›¸å¯¹è·ç¦»æœ€è¿‘
+auto star_alignment::StarAligner::_MultiReg(const std::vector<triple>& common_substrings) //æœ€ä¼˜è·¯å¾„
     -> std::vector<triple> 
 {
     //std::cout << "***common_substrings" << common_substrings.size() << "\n";
@@ -1836,11 +1836,11 @@ auto star_alignment::StarAligner::_MultiReg(const std::vector<triple>& common_su
     */
     std::vector<triple> optimal_common_substrings;
     if (common_substrings.empty()) return optimal_common_substrings;
-    int start = common_substrings[0][0];  //³õÊ¼»¯
+    int start = common_substrings[0][0];  //åˆå§‹åŒ–
     int end = common_substrings[0][0] + common_substrings[0][2];//
     int i;
-    float a_length,tmp, pre_tmp,b_length = common_substrings.rbegin()[0][1] + common_substrings.rbegin()[0][2]; //BµÄ³¤¶È
-    for (i = 1; i < common_substrings.size(); i++) // ÕÒ³öËùÓĞºó×ººÅÁĞ±íÖĞ£¬×îĞ¡ºó×ººÅ×ö  startÆğµã£¬×î´óºó×ººÅ + length_i×öendÖÕµã
+    float a_length,tmp, pre_tmp,b_length = common_substrings.rbegin()[0][1] + common_substrings.rbegin()[0][2]; //Bçš„é•¿åº¦
+    for (i = 1; i < common_substrings.size(); i++) // æ‰¾å‡ºæ‰€æœ‰åç¼€å·åˆ—è¡¨ä¸­ï¼Œæœ€å°åç¼€å·åš  startèµ·ç‚¹ï¼Œæœ€å¤§åç¼€å· + length_iåšendç»ˆç‚¹
     {
         if (common_substrings[i][0] < start) start = common_substrings[i][0];
         if ((common_substrings[i][0]+ common_substrings[i][2]) > end) end = common_substrings[i][0]+ common_substrings[i][2];
@@ -1850,12 +1850,12 @@ auto star_alignment::StarAligner::_MultiReg(const std::vector<triple>& common_su
     i = 0;
     //while ((common_substrings[i][2] < threshold)) i++;
     optimal_common_substrings.push_back(common_substrings[i]);//first
-    pre_tmp = common_substrings[i][0] / a_length - common_substrings[i][1] / b_length;//¼ÓÈëµÚÒ»¸öÔªËØ
+    pre_tmp = common_substrings[i][0] / a_length - common_substrings[i][1] / b_length;//åŠ å…¥ç¬¬ä¸€ä¸ªå…ƒç´ 
     pre_tmp = fabs(pre_tmp);
     for (i=i+1; i < common_substrings.size(); i++)
     {
         //if (common_substrings[i][2] < threshold)continue;
-        if (optimal_common_substrings.rbegin()[0][1] != common_substrings[i][1]) //b.index ²»Í¬
+        if (optimal_common_substrings.rbegin()[0][1] != common_substrings[i][1]) //b.index ä¸åŒ
         {
             pre_tmp = common_substrings[i][0] / a_length - common_substrings[i][1] / b_length;
             pre_tmp = fabs(pre_tmp);
@@ -1880,13 +1880,13 @@ auto star_alignment::StarAligner::_MultiReg(const std::vector<triple>& common_su
 
 }
 
-//·ÖÁ½²½ĞÂ¸Ä,µÚ¶ş²½£¬ÒÀ¾İ¶¯Ì¬¹æ»®£¬Ñ¡³öºÏÊÊµÄ²»ÖØµşµÄÍ¬Ô´Çø¶Î
-std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector<triple>& common_substrings) //×îÓÅÂ·¾¶
-  // [A.index£¬B.index£¬length]
+//åˆ†ä¸¤æ­¥æ–°æ”¹,ç¬¬äºŒæ­¥ï¼Œä¾æ®åŠ¨æ€è§„åˆ’ï¼Œé€‰å‡ºåˆé€‚çš„ä¸é‡å çš„åŒæºåŒºæ®µ
+std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector<triple>& common_substrings) //æœ€ä¼˜è·¯å¾„
+  // [A.indexï¼ŒB.indexï¼Œlength]
 {
     //for (int i = 0; i < common_substrings.size(); ++i)
     //    std::cout << common_substrings[i][0] << " " << common_substrings[i][1] << " " << common_substrings[i][2] << "\n";
-    std::vector<triple> optimal_common_substrings = _MultiReg(common_substrings);//µ÷ÓÃµÚÒ»²½½á¹û
+    std::vector<triple> optimal_common_substrings = _MultiReg(common_substrings);//è°ƒç”¨ç¬¬ä¸€æ­¥ç»“æœ
     //std::cout << "***_optimal_path" << optimal_common_substrings.size() << "\n";
     if (optimal_common_substrings.empty()) return optimal_common_substrings;
 
@@ -1897,20 +1897,20 @@ std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector
     int* posi = new int[m];
     for (int i = 0; i < m; i++) dp[i] = INT_MAX;
     std::vector<triple> ans_common_substrings;
-    int pos = 0, pos1 = 0, k, len;    // ¼ÇÂ¼dpµ±Ç°×îºóÒ»Î»µÄÏÂ±ê
-    dp[0] = optimal_common_substrings[0][0] + optimal_common_substrings[0][2];   // dp[0]ÖµÏÔÈ»Îªa[0]
+    int pos = 0, pos1 = 0, k, len;    // è®°å½•dpå½“å‰æœ€åä¸€ä½çš„ä¸‹æ ‡
+    dp[0] = optimal_common_substrings[0][0] + optimal_common_substrings[0][2];   // dp[0]å€¼æ˜¾ç„¶ä¸ºa[0]
     last[0] = 0;
     for (int i = 1; i < m; i++)
     {
-        if (optimal_common_substrings[i][0] + optimal_common_substrings[i][2] > dp[pos])    // Èôa[i]´óÓÚdpÊı×é×î´óÖµ£¬ÔòÖ±½ÓÌí¼Ó
+        if (optimal_common_substrings[i][0] + optimal_common_substrings[i][2] > dp[pos])    // è‹¥a[i]å¤§äºdpæ•°ç»„æœ€å¤§å€¼ï¼Œåˆ™ç›´æ¥æ·»åŠ 
         {
             dp[++pos] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];
             last[i] = pos;
         }
-        else    // ·ñÔòÕÒµ½dpÖĞµÚÒ»¸ö´óÓÚµÈÓÚa[i]µÄÎ»ÖÃ£¬ÓÃa[i]Ìæ»»Ö®¡£
+        else    // å¦åˆ™æ‰¾åˆ°dpä¸­ç¬¬ä¸€ä¸ªå¤§äºç­‰äºa[i]çš„ä½ç½®ï¼Œç”¨a[i]æ›¿æ¢ä¹‹ã€‚
         {
             k = std::lower_bound(dp, dp + pos + 1, optimal_common_substrings[i][0] + optimal_common_substrings[i][2]) - dp;
-            dp[k] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];  // ¶ş·Ö²éÕÒ
+            dp[k] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];  // äºŒåˆ†æŸ¥æ‰¾
             last[i] = k;
         }
     }
@@ -1918,7 +1918,7 @@ std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector
     for (int i = m - 1; i >= 0; i--)
         if (last[i] == len)posi[len--] = i;
     ans_common_substrings.push_back(optimal_common_substrings[posi[0]]);
-    int total = 0, prev = ans_common_substrings[0][0] + ans_common_substrings[0][2];//total±íÊ¾ËùÒªÒÆ³ıÇø¼äµÄ¸öÊı 
+    int total = 0, prev = ans_common_substrings[0][0] + ans_common_substrings[0][2];//totalè¡¨ç¤ºæ‰€è¦ç§»é™¤åŒºé—´çš„ä¸ªæ•° 
     for (int i = 1; i < pos + 1; i++)
     {
         if (optimal_common_substrings[posi[i]][0] < prev)
@@ -1938,20 +1938,20 @@ std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector
     ans_common_substrings.resize(0);
     m = optimal_common_substrings.size();
     for (int i = 0; i < m; i++) dp[i] = INT_MAX;
-    pos = 0, pos1 = 0, k, len;    // ¼ÇÂ¼dpµ±Ç°×îºóÒ»Î»µÄÏÂ±ê 
-    dp[0] = optimal_common_substrings[0][1] + optimal_common_substrings[0][2];   // dp[0]ÖµÏÔÈ»Îªa[0]
+    pos = 0, pos1 = 0, k, len;    // è®°å½•dpå½“å‰æœ€åä¸€ä½çš„ä¸‹æ ‡ 
+    dp[0] = optimal_common_substrings[0][1] + optimal_common_substrings[0][2];   // dp[0]å€¼æ˜¾ç„¶ä¸ºa[0]
     last[0] = 0;
     for (int i = 1; i < m; i++)
     {
-        if (optimal_common_substrings[i][1] + optimal_common_substrings[i][2] > dp[pos])    // Èôa[i]´óÓÚdpÊı×é×î´óÖµ£¬ÔòÖ±½ÓÌí¼Ó
+        if (optimal_common_substrings[i][1] + optimal_common_substrings[i][2] > dp[pos])    // è‹¥a[i]å¤§äºdpæ•°ç»„æœ€å¤§å€¼ï¼Œåˆ™ç›´æ¥æ·»åŠ 
         {
             dp[++pos] = optimal_common_substrings[i][1] + optimal_common_substrings[i][2];
             last[i] = pos;
         }
-        else    // ·ñÔòÕÒµ½dpÖĞµÚÒ»¸ö´óÓÚµÈÓÚa[i]µÄÎ»ÖÃ£¬ÓÃa[i]Ìæ»»Ö®¡£
+        else    // å¦åˆ™æ‰¾åˆ°dpä¸­ç¬¬ä¸€ä¸ªå¤§äºç­‰äºa[i]çš„ä½ç½®ï¼Œç”¨a[i]æ›¿æ¢ä¹‹ã€‚
         {
             k = std::lower_bound(dp, dp + pos + 1, optimal_common_substrings[i][1] + optimal_common_substrings[i][2]) - dp;
-            dp[k] = optimal_common_substrings[i][1] + optimal_common_substrings[i][2];  // ¶ş·Ö²éÕÒ
+            dp[k] = optimal_common_substrings[i][1] + optimal_common_substrings[i][2];  // äºŒåˆ†æŸ¥æ‰¾
             last[i] = k;
         }
     }
@@ -1959,7 +1959,7 @@ std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector
     for (int i = m - 1; i >= 0; i--)
         if (last[i] == len)posi[len--] = i;
     ans_common_substrings.push_back(optimal_common_substrings[posi[0]]);
-    total = 0, prev = ans_common_substrings[0][1] + ans_common_substrings[0][2];//total±íÊ¾ËùÒªÒÆ³ıÇø¼äµÄ¸öÊı 
+    total = 0, prev = ans_common_substrings[0][1] + ans_common_substrings[0][2];//totalè¡¨ç¤ºæ‰€è¦ç§»é™¤åŒºé—´çš„ä¸ªæ•° 
     for (int i = 1; i < pos + 1; i++)
     {
         if (optimal_common_substrings[posi[i]][1] < prev)
@@ -1984,7 +1984,7 @@ std::vector<triple> star_alignment::StarAligner::_optimal_path(const std::vector
             std::cout << ans_common_substrings[i][0] << " " << ans_common_substrings[i][1] << " " << ans_common_substrings[i][2] << "\n\n";
         }
     */    
-    std::vector<triple>().swap(optimal_common_substrings);//Çå¿ÕÒ»¿éÄÚ´æ
+    std::vector<triple>().swap(optimal_common_substrings);//æ¸…ç©ºä¸€å—å†…å­˜
     delete[] posi;
     delete[] last;
     delete[] dp;
@@ -2005,7 +2005,7 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
     double thresh_len_cha_i = 0.15;
     int gap_thresh = 20;*/
     
-    size_t thresh_len = arguments::sv_thresh_len;//¿ÉÒÔ¸øÓÃ»§Ö¸¶¨
+    size_t thresh_len = arguments::sv_thresh_len;//å¯ä»¥ç»™ç”¨æˆ·æŒ‡å®š
     size_t thresh_dis = arguments::sv_thresh_len < 1000 ? 1000 : arguments::sv_thresh_len;
     double thresh_bi = 0.3;
     double thresh_len_cha = 0.25;
@@ -2031,18 +2031,18 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
         // update subchain indices for this common substring
         for (int j = 0; j < cur_subchain.size(); j++)
         {
-            //¸üĞÂÁ´
+            //æ›´æ–°é“¾
             tag = false;
             auto& subchain = cur_subchain[j];
             A_len = a_start + len - subchain.a_start;
             B_len = b_start + len - subchain.b_start;
             if (b_start >= subchain.b_end && a_start >= subchain.a_end
-                && b_start <= (subchain.b_end + thresh_dis) //Ë³Ğò£¬½ô´Õ
+                && b_start <= (subchain.b_end + thresh_dis) //é¡ºåºï¼Œç´§å‡‘
                 && a_start <= (subchain.a_end + thresh_dis)
-                //&& len > thresh_bi * (b_start - subchain.b_end) //·ÀÖ¹×îºóÒ»¸öÔªËØºÜÀëÆ×
-                //&& len > thresh_bi * (a_start - subchain.a_end) //·ÀÖ¹×îºóÒ»¸öÔªËØºÜÀëÆ×
-                && (subchain.len + len) > std::max(A_len, B_len) * thresh_bi //¸²¸Ç¶È
-                && abs(A_len - B_len) < std::min(A_len, B_len) * thresh_len_cha) //Á½´®³¤¶È²î
+                //&& len > thresh_bi * (b_start - subchain.b_end) //é˜²æ­¢æœ€åä¸€ä¸ªå…ƒç´ å¾ˆç¦»è°±
+                //&& len > thresh_bi * (a_start - subchain.a_end) //é˜²æ­¢æœ€åä¸€ä¸ªå…ƒç´ å¾ˆç¦»è°±
+                && (subchain.len + len) > std::max(A_len, B_len) * thresh_bi //è¦†ç›–åº¦
+                && abs(A_len - B_len) < std::min(A_len, B_len) * thresh_len_cha) //ä¸¤ä¸²é•¿åº¦å·®
                 tag = true;
             if(tag)
             {
@@ -2069,10 +2069,10 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
             }
             else if (b_start > (subchain.b_end + thresh_dis))
             {
-                subchain.state = true; //¸ÃÁ´¶ÏÁË£¬Ñ­»·ÍâÒªÈ¥ÅĞ¶¨ÁË¡£
+                subchain.state = true; //è¯¥é“¾æ–­äº†ï¼Œå¾ªç¯å¤–è¦å»åˆ¤å®šäº†ã€‚
             }
         }
-        //´´½¨ĞÂÁ´
+        //åˆ›å»ºæ–°é“¾
         if (single_tag)
         {
             struct subchain tmp;
@@ -2087,17 +2087,17 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
             subchain.chains.push_back(common_substrings[i]);
         }
 
-        //ÅĞ¶¨Á´ÊÇÈ¥ÊÇÁô
+        //åˆ¤å®šé“¾æ˜¯å»æ˜¯ç•™
         for (int j = 0; j < cur_subchain.size();)
         {
-            if (cur_subchain[j].state)//¶ÏÁ´
+            if (cur_subchain[j].state)//æ–­é“¾
             {
                 if(cur_subchain[j].chains.size()>1)
                 {
                     auto& back2chain = cur_subchain[j].chains[cur_subchain[j].chains.size()-2];
                     auto& backchain = cur_subchain[j].chains.back();
                     if (backchain[2] > thresh_bi * (backchain[1] - (back2chain[1] + back2chain[2]))
-                        && backchain[2] > thresh_bi * (backchain[0] - (back2chain[0] + back2chain[2]))) //·ÀÖ¹×îºóÒ»¸öÔªËØºÜÀëÆ×
+                        && backchain[2] > thresh_bi * (backchain[0] - (back2chain[0] + back2chain[2]))) //é˜²æ­¢æœ€åä¸€ä¸ªå…ƒç´ å¾ˆç¦»è°±
                         ;
                     else
                     {
@@ -2108,50 +2108,50 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
                     }
                 }
                 if ((cur_subchain[j].a_end - cur_subchain[j].a_start) > thresh_len
-                    && (cur_subchain[j].b_end - cur_subchain[j].b_start) > thresh_len)//Ó¦¸Ã¼Ó¸ö±È¶Ô£¬¿´×îÖÕÖÊÁ¿´óÓÚãĞÖµ
+                    && (cur_subchain[j].b_end - cur_subchain[j].b_start) > thresh_len)//åº”è¯¥åŠ ä¸ªæ¯”å¯¹ï¼Œçœ‹æœ€ç»ˆè´¨é‡å¤§äºé˜ˆå€¼
                 {
                     if (chain_filter.count({ cur_subchain[j].chains.back()[0],cur_subchain[j].chains.back()[1] }))
                     {
                         if (chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].first < cur_subchain[j].chains.size())
                         {
-                            index.push_back(chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second);//ºóĞøÉ¾³ı
+                            index.push_back(chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second);//åç»­åˆ é™¤
                             chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }]
                                 = { cur_subchain[j].chains.size(),final_subchains.size() };
-                            final_subchains.push_back(cur_subchain[j].chains);//¼ÓÈëºÏ¸ñÁ´
+                            final_subchains.push_back(cur_subchain[j].chains);//åŠ å…¥åˆæ ¼é“¾
                             //chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].first = cur_subchain[j].chains.size();
                             //final_subchains[chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second].swap(cur_subchain[j].chains);
-                            //Ìæ»»,Î»ÖÃ²»±ä
+                            //æ›¿æ¢,ä½ç½®ä¸å˜
                         }
                     }
                     else
                     {
                         chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }]
                             = { cur_subchain[j].chains.size(),final_subchains.size() };
-                        final_subchains.push_back(cur_subchain[j].chains);//¼ÓÈëºÏ¸ñÁ´
+                        final_subchains.push_back(cur_subchain[j].chains);//åŠ å…¥åˆæ ¼é“¾
 
-                        // ¿ÉÒÔÊ¹ÓÃ reverse_iterator ÄæĞò±éÀú final_subchains
+                        // å¯ä»¥ä½¿ç”¨ reverse_iterator é€†åºéå† final_subchains
                         //for (it = final_subchains.rbegin(); (it != final_subchains.rend()) && (cur_subchain[j].chains[0][1] < (*it)[0][1]); ++it);
                         //final_subchains.insert(it.base(), cur_subchain[j].chains);
 
                     }
                 }
-                cur_subchain.erase(cur_subchain.begin() + j);//Çå¿Õ¶ÏÁ´
+                cur_subchain.erase(cur_subchain.begin() + j);//æ¸…ç©ºæ–­é“¾
             }
             else
                 j++;
         }
     }
-    //ÅĞ¶¨Á´ÊÇÈ¥ÊÇÁô
+    //åˆ¤å®šé“¾æ˜¯å»æ˜¯ç•™
     for (int j = 0; j < cur_subchain.size();)
     {
-        if (1)//¶ÏÁ´
+        if (1)//æ–­é“¾
         {
             if (cur_subchain[j].chains.size() > 1)
             {
                 auto& back2chain = cur_subchain[j].chains[cur_subchain[j].chains.size() - 2];
                 auto& backchain = cur_subchain[j].chains.back();
                 if (backchain[2] > thresh_bi * (backchain[1] - (back2chain[1] + back2chain[2]))
-                    && backchain[2] > thresh_bi * (backchain[0] - (back2chain[0] + back2chain[2]))) //·ÀÖ¹×îºóÒ»¸öÔªËØºÜÀëÆ×
+                    && backchain[2] > thresh_bi * (backchain[0] - (back2chain[0] + back2chain[2]))) //é˜²æ­¢æœ€åä¸€ä¸ªå…ƒç´ å¾ˆç¦»è°±
                     ;
                 else
                 {
@@ -2162,34 +2162,34 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
                 }
             }
             if ((cur_subchain[j].a_end - cur_subchain[j].a_start) > thresh_len
-                && (cur_subchain[j].b_end - cur_subchain[j].b_start) > thresh_len)//Ó¦¸Ã¼Ó¸ö±È¶Ô£¬¿´×îÖÕÖÊÁ¿´óÓÚãĞÖµ
+                && (cur_subchain[j].b_end - cur_subchain[j].b_start) > thresh_len)//åº”è¯¥åŠ ä¸ªæ¯”å¯¹ï¼Œçœ‹æœ€ç»ˆè´¨é‡å¤§äºé˜ˆå€¼
             {
                 if (chain_filter.count({ cur_subchain[j].chains.back()[0],cur_subchain[j].chains.back()[1] }))
                 {
                     if (chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].first < cur_subchain[j].chains.size())
                     {
-                        index.push_back(chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second);//ºóĞøÉ¾³ı
+                        index.push_back(chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second);//åç»­åˆ é™¤
                         chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }]
                             = { cur_subchain[j].chains.size(),final_subchains.size() };
-                        final_subchains.push_back(cur_subchain[j].chains);//¼ÓÈëºÏ¸ñÁ´
+                        final_subchains.push_back(cur_subchain[j].chains);//åŠ å…¥åˆæ ¼é“¾
                         //chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].first = cur_subchain[j].chains.size();
                         //final_subchains[chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }].second].swap(cur_subchain[j].chains);
-                        //Ìæ»»,Î»ÖÃ²»±ä
+                        //æ›¿æ¢,ä½ç½®ä¸å˜
                     }
                 }
                 else
                 {
                     chain_filter[{ cur_subchain[j].chains.back()[0], cur_subchain[j].chains.back()[1] }]
                         = { cur_subchain[j].chains.size(),final_subchains.size() };
-                    final_subchains.push_back(cur_subchain[j].chains);//¼ÓÈëºÏ¸ñÁ´
+                    final_subchains.push_back(cur_subchain[j].chains);//åŠ å…¥åˆæ ¼é“¾
 
-                    // ¿ÉÒÔÊ¹ÓÃ reverse_iterator ÄæĞò±éÀú final_subchains
+                    // å¯ä»¥ä½¿ç”¨ reverse_iterator é€†åºéå† final_subchains
                     //for (it = final_subchains.rbegin(); (it != final_subchains.rend()) && (cur_subchain[j].chains[0][1] < (*it)[0][1]); ++it);
                     //final_subchains.insert(it.base(), cur_subchain[j].chains);
 
                 }
             }
-            cur_subchain.erase(cur_subchain.begin() + j);//Çå¿Õ¶ÏÁ´
+            cur_subchain.erase(cur_subchain.begin() + j);//æ¸…ç©ºæ–­é“¾
         }
         else
             j++;
@@ -2211,7 +2211,7 @@ std::vector <std::vector<quadra>> star_alignment::StarAligner::find_subchains(st
     std::vector <std::vector<quadra>> final_intervals(final_subchains.size());
     for (int i = 0; i < final_subchains.size(); i++)
     {
-        //auto common_substrings = mini_optimal_path(final_subchains[i]);//É¸Ñ¡ÎŞÇ°ºóÖØµş
+        //auto common_substrings = mini_optimal_path(final_subchains[i]);//ç­›é€‰æ— å‰åé‡å 
         auto & common_substrings = final_subchains[i];
         auto & intervals = final_intervals[i];
         //first one
@@ -2262,11 +2262,11 @@ std::vector<int> _trace_back_bp(const std::vector<triple>& common_substrings, in
             j--;
         }
     }
-    reverse(ansi.begin(), ansi.end());//·´×ª
+    reverse(ansi.begin(), ansi.end());//åè½¬
     return ansi;
 }
-//µÚ¶ş²½£¬ÒÀ¾İ¶¯Ì¬¹æ»®£¬Ñ¡³öºÏÊÊµÄ²»ÖØµşµÄÍ¬Ô´Çø¶Î
-void _optimal_path_bp(const std::vector<triple>& optimal_common_substrings, std::vector<triple>& ans_common_substrings) //×îÓÅÂ·¾¶
+//ç¬¬äºŒæ­¥ï¼Œä¾æ®åŠ¨æ€è§„åˆ’ï¼Œé€‰å‡ºåˆé€‚çš„ä¸é‡å çš„åŒæºåŒºæ®µ
+void _optimal_path_bp(const std::vector<triple>& optimal_common_substrings, std::vector<triple>& ans_common_substrings) //æœ€ä¼˜è·¯å¾„
 {
     int m = optimal_common_substrings.size();
     if (m <= 1) 
@@ -2289,9 +2289,9 @@ void _optimal_path_bp(const std::vector<triple>& optimal_common_substrings, std:
     delete[] p;
 }
 
-std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <std::vector<quadra>> & chain, const std::vector<triple>& common_substrings, bool filter) //×îÓÅÂ·¾¶
+std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <std::vector<quadra>> & chain, const std::vector<triple>& common_substrings, bool filter) //æœ€ä¼˜è·¯å¾„
 {
-    std::vector<triple> optimal_common_substrings = _MultiReg(common_substrings);//µ÷ÓÃµÚÒ»²½½á¹û
+    std::vector<triple> optimal_common_substrings = _MultiReg(common_substrings);//è°ƒç”¨ç¬¬ä¸€æ­¥ç»“æœ
     
     if (optimal_common_substrings.empty()) return optimal_common_substrings;
     //std::cout << common_substrings.size() << " common_substrings\n";
@@ -2306,20 +2306,20 @@ std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <st
         int* posi = new int[m];
         for (int i = 0; i < m; i++) dp[i] = INT_MAX;
 
-        int pos = 0, pos1 = 0, k, len;    // ¼ÇÂ¼dpµ±Ç°×îºóÒ»Î»µÄÏÂ±ê
-        dp[0] = optimal_common_substrings[0][0] + optimal_common_substrings[0][2];   // dp[0]ÖµÏÔÈ»Îªa[0]
+        int pos = 0, pos1 = 0, k, len;    // è®°å½•dpå½“å‰æœ€åä¸€ä½çš„ä¸‹æ ‡
+        dp[0] = optimal_common_substrings[0][0] + optimal_common_substrings[0][2];   // dp[0]å€¼æ˜¾ç„¶ä¸ºa[0]
         last[0] = 0;
         for (int i = 1; i < m; i++)
         {
-            if (optimal_common_substrings[i][0] + optimal_common_substrings[i][2] > dp[pos])    // Èôa[i]´óÓÚdpÊı×é×î´óÖµ£¬ÔòÖ±½ÓÌí¼Ó
+            if (optimal_common_substrings[i][0] + optimal_common_substrings[i][2] > dp[pos])    // è‹¥a[i]å¤§äºdpæ•°ç»„æœ€å¤§å€¼ï¼Œåˆ™ç›´æ¥æ·»åŠ 
             {
                 dp[++pos] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];
                 last[i] = pos;
             }
-            else    // ·ñÔòÕÒµ½dpÖĞµÚÒ»¸ö´óÓÚµÈÓÚa[i]µÄÎ»ÖÃ£¬ÓÃa[i]Ìæ»»Ö®¡£
+            else    // å¦åˆ™æ‰¾åˆ°dpä¸­ç¬¬ä¸€ä¸ªå¤§äºç­‰äºa[i]çš„ä½ç½®ï¼Œç”¨a[i]æ›¿æ¢ä¹‹ã€‚
             {
                 k = std::lower_bound(dp, dp + pos + 1, optimal_common_substrings[i][0] + optimal_common_substrings[i][2]) - dp;
-                dp[k] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];  // ¶ş·Ö²éÕÒ
+                dp[k] = optimal_common_substrings[i][0] + optimal_common_substrings[i][2];  // äºŒåˆ†æŸ¥æ‰¾
                 last[i] = k;
             }
         }
@@ -2327,7 +2327,7 @@ std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <st
         for (int i = m - 1; i >= 0; i--)
             if (last[i] == len)posi[len--] = i;
         ans_common_substrings.push_back(optimal_common_substrings[posi[0]]);
-        int total = 0, prev = ans_common_substrings[0][0] + ans_common_substrings[0][2];//total±íÊ¾ËùÒªÒÆ³ıÇø¼äµÄ¸öÊı 
+        int total = 0, prev = ans_common_substrings[0][0] + ans_common_substrings[0][2];//totalè¡¨ç¤ºæ‰€è¦ç§»é™¤åŒºé—´çš„ä¸ªæ•° 
         for (int i = 1; i < pos + 1; i++)
         {
             if (optimal_common_substrings[posi[i]][0] < prev)
@@ -2341,7 +2341,7 @@ std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <st
             }
         }
 
-        std::vector<triple>().swap(optimal_common_substrings);//Çå¿ÕÒ»¿éÄÚ´æ
+        std::vector<triple>().swap(optimal_common_substrings);//æ¸…ç©ºä¸€å—å†…å­˜
         delete[] posi;
         delete[] last;
         delete[] dp;
@@ -2413,9 +2413,9 @@ std::vector<triple> star_alignment::StarAligner::sv_optimal_path(std::vector <st
     return ans_common_substrings;
 }
 
-//ÕûºÏMSA-gap½á¹û£¬´«ÈëË«±Ègap½á¹û£¬·µ»Øfinal_sequence_gaps
-//´«Èë£¬Ë«ĞòÁĞ±È¶ÔµÃµ½µÄÁ½Á½gap£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸öÔªËØÓĞ³¤¶ÈÎª2µÄarray£¬Ã¿¸öÔªËØÊÇÓĞÈô¸É¸öInsertionµÄvector
-//·µ»Ø×îºó½á¹û£¬³¤¶ÈÎªnµÄvector£¬Ã¿¸övector´æ´¢Èô¸É¸öInsertion£¬ÓĞindex+number
+//æ•´åˆMSA-gapç»“æœï¼Œä¼ å…¥åŒæ¯”gapç»“æœï¼Œè¿”å›final_sequence_gaps
+//ä¼ å…¥ï¼ŒåŒåºåˆ—æ¯”å¯¹å¾—åˆ°çš„ä¸¤ä¸¤gapï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªå…ƒç´ æœ‰é•¿åº¦ä¸º2çš„arrayï¼Œæ¯ä¸ªå…ƒç´ æ˜¯æœ‰è‹¥å¹²ä¸ªInsertionçš„vector
+//è¿”å›æœ€åç»“æœï¼Œé•¿åº¦ä¸ºnçš„vectorï¼Œæ¯ä¸ªvectorå­˜å‚¨è‹¥å¹²ä¸ªInsertionï¼Œæœ‰index+number
 auto star_alignment::StarAligner::_merge_results(const std::vector<std::array<std::vector<utils::Insertion>, 2>> &pairwise_gaps) const
         -> std::vector<std::vector<utils::Insertion>>
 {
