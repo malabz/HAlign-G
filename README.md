@@ -45,7 +45,7 @@ halign-g -h
 git clone https://github.com/malabz/HAlign-G.git
 
 #2 Open the folder
-cd HAlign-G
+cd HAlign-G/src
 
 #3 Compile
 make -j16
