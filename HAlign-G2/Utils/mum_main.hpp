@@ -27,7 +27,7 @@
 #include "sequence.h"
 #include "Utils.hpp"
 
-#include "../SuffixArray/SuffixArray.hpp"  //ï¿½ï¿½ï¿½Ãºï¿½×ºï¿½ï¿½
+#include "../SuffixArray/SuffixArray.hpp"  //ÀûÓÃºó×ºÊ÷
 #include "../PairwiseAlignment/NeedlemanWunshReusable.hpp"
 
 
@@ -51,8 +51,8 @@ struct Mum_struct_insert {
 using mquadra = std::array<int, 5>;
 using quadras = std::vector<std::array<int, 5>>;
 
-std::vector<std::vector<utils::Insertion>> mum_main(std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<size_t>& non_Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2, size_t inThreads, int filter_level);
-void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std::array<std::vector<utils::Insertion>, 2>>& all_pairwise_gaps, std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2, size_t inThreads, int filter_level);
+std::vector<std::vector<utils::Insertion>> mum_main(std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<size_t>& non_Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2);
+void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std::array<std::vector<utils::Insertion>, 2>>& all_pairwise_gaps, std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2);
 bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_filename, std::string seq_file, size_t lengthA, size_t lengthB, bool TU);
 void get_inserts(std::vector<utils::Insertion>& inserts_1, std::vector<utils::Insertion>& inserts_2, std::vector <long>& numbers, size_t start1, size_t start2);
 void max_weight_increasing_subsequence(std::vector<Mum_struct>& struct_list);

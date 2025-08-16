@@ -32,7 +32,8 @@ TARGET = halign-g2
 all: $(TARGET)
 
 $(TARGET): $(OBJS_C) $(OBJS_CPP)
-	make -C nucmer
+	make -C nucmer1
+	make -C nucmerq
 	$(CXX) $^ -o $@ -static-libstdc++ $(LDFLAGS)
 
 %.o: %.c

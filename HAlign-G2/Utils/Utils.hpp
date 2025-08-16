@@ -1,5 +1,5 @@
 #pragma once
-//è¯»å…¥ï¼Œå†™å›ï¼Œé¢„å¤„ç†ï¼Œåå¤„ç†ï¼Œç»Ÿä¸€åŒ–
+//¶ÁÈë£¬Ğ´»Ø£¬Ô¤´¦Àí£¬ºó´¦Àí£¬Í³Ò»»¯
 
 #include "Pseudo.hpp"
 #include "Insertion.hpp"
@@ -67,7 +67,7 @@ bool deleteDirectory(std::string path);
 void renameAndMoveFile(const std::string& filePath);
 void renameFile(const std::string& oldPath, const std::string& newPath);
 
-//æµ‹è¯•å†…å­˜å³°å€¼
+//²âÊÔÄÚ´æ·åÖµ
 inline void GetMemoryUsage()
 {
     int mem = getPeakRSS() / 1024.0 / 1024.0;
@@ -91,9 +91,9 @@ namespace utils
     struct MAF_info
     {
         std::string path;
-        int thresh1; //é•¿åº¦100
-        int thresh2; //æ¡æ•°1
-        int thresh3; //åˆ†æ•°95
+        int thresh1; //³¤¶È100
+        int thresh2; //ÌõÊı1
+        int thresh3; //·ÖÊı95
     };
     struct block
     {
@@ -155,7 +155,7 @@ namespace utils
         size_t end1;
         size_t start2;
         size_t end2;
-        bool tag = 0;//1-å…¨è¦
+        bool tag = 0;//1-È«Òª
         std::vector<std::tuple<int, int>> gap1;
         std::vector<std::tuple<int, int>> gap2;
     };
@@ -163,7 +163,7 @@ namespace utils
     struct MAF_block
     {
         float score;
-        int tag_num;  //è®°å½•æœ‰tagçš„åˆ—æ•°ï¼Œè¿ç»­æ€§
+        int tag_num;  //¼ÇÂ¼ÓĞtagµÄÁĞÊı£¬Á¬ĞøĞÔ
         std::vector<block> seq;
     };
 
@@ -180,7 +180,7 @@ namespace utils
     UCHAR* BLAST_PackDNA(std::vector<unsigned char>& seq);
     UCHAR* BLAST_PackDNA(std::string buffer, UCHAR* new_buffer);
     UCHAR* copy_DNA(UCHAR* buffer, int start, int end);
-    UCHAR* copy_DNA_ni(UCHAR* buffer, int start, int end);  //å…ˆæŒ‰æ­£ä¸²ç´¢å¼•å–æ­£ä¸²ï¼Œå†é€†è¡¥ã€‚æ³¨æ„ä¼ å…¥æ—¶éœ€è¦æŠŠé€†ä¸²ç´¢å¼•è½¬ä¸ºæ­£ä¸²ç´¢å¼•
+    UCHAR* copy_DNA_ni(UCHAR* buffer, int start, int end);  //ÏÈ°´Õı´®Ë÷ÒıÈ¡Õı´®£¬ÔÙÄæ²¹¡£×¢Òâ´«ÈëÊ±ĞèÒª°ÑÄæ´®Ë÷Òı×ªÎªÕı´®Ë÷Òı
     UCHAR* copy_DNA(UCHAR* buffer, UCHAR* new_buffer, int start, int end);
     void DNA_cout(seq_NCBI2NA& Seq);
 
@@ -189,29 +189,29 @@ namespace utils
     int get_next_maf(std::ifstream& mfs, struct maf_2_block& mafi, int d = 0, int e = 0, int m = 1, int mis = 0);
     int get_next_sv_maf(std::ifstream& mfs, struct maf_sv_block& mafi, std::string sign_i, int d = 0, int e = 0, int m = 1, int mis = 0);
     int* maf_Compare_two(std::ifstream& mfs, std::ifstream& mfsv, std::string& s1, std::string& s2, bool signi, int d = 0, int e = 0, int m = 1, int mis = 0);
-    std::string remove_white_spaces(const std::string& str); //å»æ‰ç©ºæ ¼
+    std::string remove_white_spaces(const std::string& str); //È¥µô¿Õ¸ñ
 
-    unsigned char to_pseudo(unsigned char c); //é¢„å¤„ç†ï¼Œchar->int
+    unsigned char to_pseudo(unsigned char c); //Ô¤´¦Àí£¬char->int
     void to_pseudo(std::string& str, std::vector<unsigned char>& seq);
     void to_pseudo(std::string& str);
     std::string from_pseudo(const std::vector<unsigned char>& pseu);
 
     template<typename InputIterator, typename OutputIterator>
-    void transform_to_pseudo(InputIterator src_first, InputIterator src_last, OutputIterator des)   //é¢„å¤„ç†ï¼Œchar->int
+    void transform_to_pseudo(InputIterator src_first, InputIterator src_last, OutputIterator des)   //Ô¤´¦Àí£¬char->int
     {
         std::vector<unsigned char>(*op)(const std::string&) = &to_pseudo;
         std::transform(src_first, src_last, des, op);
     }
 
     template<typename InputIterator, typename OutputIterator>
-    void transform_from_pseudo(InputIterator src_first, InputIterator src_last, OutputIterator des) //åå¤„ç†ï¼Œint->char
+    void transform_from_pseudo(InputIterator src_first, InputIterator src_last, OutputIterator des) //ºó´¦Àí£¬int->char
     {
         std::string(*op)(const std::vector<unsigned char> &) = &from_pseudo;
         std::transform(src_first, src_last, des, op);
     }
 
     template<typename InputIterator>
-    InputIterator iter_of_max(InputIterator first, InputIterator last) //æ‰¾åˆ°æœ€å¤§çš„å…ƒç´ 
+    InputIterator iter_of_max(InputIterator first, InputIterator last) //ÕÒµ½×î´óµÄÔªËØ
     {
         auto result = first;
 
@@ -285,9 +285,8 @@ namespace Stream
 void reverseString(char* str);
 size_t maf_i_score(char* ref, char* newString);
 template<typename Representation, typename Period>
-std::ostream& operator<<(std::ostream& os, std::chrono::duration<Representation, Period> duration) //æ—¶é—´æ¶ˆè€—
+std::ostream& operator<<(std::ostream& os, std::chrono::duration<Representation, Period> duration) //Ê±¼äÏûºÄ
 {
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms";
     return os;
 }
-void processFastaFile(int index, const std::string& filename, std::vector<size_t>& sequence_lengths, std::vector<std::string>& Name_All);

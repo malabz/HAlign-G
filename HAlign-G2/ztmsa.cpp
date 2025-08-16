@@ -1,4 +1,4 @@
-ï»¿#if defined(_WIN32)
+#if defined(_WIN32)
 #endif
 
 #include "Utils/CommandLine.hpp"
@@ -9,45 +9,26 @@
 #include <string>
 using namespace std;
 
-int getTotalMemory() {
-    std::ifstream meminfo("/proc/meminfo");
-    std::string line;
-    long long total_memory = 0;
-
-    if (meminfo.is_open()) {
-        while (std::getline(meminfo, line)) {
-            if (line.find("MemTotal:") == 0) {
-                // è§£æMemTotalè¡Œï¼Œè·å–æ€»å†…å­˜å¤§å°
-                std::sscanf(line.c_str(), "MemTotal: %lld kB", &total_memory);
-                break;
-            }
-        }
-        meminfo.close();
-    }
-
-    return  static_cast<double>(total_memory) / (1024 * 1024); // å•ä½ä¸ºkB
-}
-
 
 std::map<unsigned char, unsigned char> dick = { {'A', '\1'}, {'C', '\2'}, {'G', '\3'}, {'T', '\4'}, {'U', '\4'}, {'N', '\5'}, {'-', '\7'} };
 
 int main(int argc, char* argv[])
-{
+{  
     SmpCommandLine userCommands(argc, argv);
-    bool FAorMA = 1;//è¾“å‡ºä¸ºfasta=0ï¼Œ è¾“å‡ºä¸ºmaf=1
+    bool FAorMA = 1;//Êä³öÎªfasta=0£¬ Êä³öÎªmaf=1
     int numThreads = 8;
     utils::MAF_info MAFinfo;
     int multiz_num = 0;
     bool mg_tag = false; //1-maf 0-fasta
-    int center = -1;//é»˜è®¤-1ï¼›
+    int center = -1;//Ä¬ÈÏ-1£»
     std::string center_name = "";
-    const auto start_point = std::chrono::high_resolution_clock::now(); //è®°å½•æ€»èµ·å§‹æ—¶é—´
+    const auto start_point = std::chrono::high_resolution_clock::now(); //¼ÇÂ¼×ÜÆğÊ¼Ê±¼ä
 
-    bool result_maf = 1;//1è¾“å‡ºé‡å¤ï¼Œ 0è¾“å‡ºå”¯ä¸€                 *****************
-    int thresh2 = 10000; //10000    æœªå¿…å¯¹åŒºåŸŸåˆ†å‰²åˆ°*ä»¥ä¸‹       *****************
-    int MAFthresh1 = 1;//æœ€çŸ­é•¿åº¦
-    int MAFthresh2 = 2;//æœ€å°è¡Œæ•°
-    int MAFthresh3 = 0;//æœ€ä½åˆ†æ•°
+    bool result_maf = 1;//1Êä³öÖØ¸´£¬ 0Êä³öÎ¨Ò»                 *****************
+    int thresh2 = 10000; //10000    Î´±Ø¶ÔÇøÓò·Ö¸îµ½*ÒÔÏÂ       *****************
+    int MAFthresh1 = 1;//×î¶Ì³¤¶È
+    int MAFthresh2 = 2;//×îĞ¡ĞĞÊı
+    int MAFthresh3 = 0;//×îµÍ·ÖÊı
 
 
     // Firstly extract all flagged argumants (i.e. argument identified by a leading hyphen flag)
@@ -56,15 +37,13 @@ int main(int argc, char* argv[])
     thresh2 = userCommands.getInteger("dc", "divide_conquer", 10000, "The divide & conquer Kband threshold");
     arguments::in_file_name = userCommands.getString(1, "", " Input file/folder path[Please use .fasta as the file suffix or a forder]");
     arguments::out_file_name = userCommands.getString(2, "", " Output file path[Please use .maf or .fasta as the file suffix]");
-    int mem_size = userCommands.getInteger("m", "memory", getTotalMemory(), "Maximum available memory / GB");
-    int filter_level = userCommands.getInteger("f", "filter", 2, "Filter-level: 0-None, 1-General, 2-Strict");
-
+    
     //center_name = "1ref";
-    //æ‰‹åŠ¨æŒ‡å®š
+    //ÊÖ¶¯Ö¸¶¨
     //arguments::in_file_name = "C:/Users/13508/Desktop/test-data/";
     //arguments::out_file_name = "C:/Users/13508/Desktop/test-data.maf";
 
-
+    
     if (userCommands.helpMessageWanted() || argc == 1)
     {
         userCommands.showHelpMessage();
@@ -79,7 +58,7 @@ int main(int argc, char* argv[])
         std::cout << "Insufficient input parameter!\n";
         exit(1);
     }
-
+    
     std::filesystem::path absolutePath = std::filesystem::absolute(arguments::in_file_name);
     if (std::filesystem::exists(absolutePath)) {
         arguments::in_file_name = absolutePath.generic_string();
@@ -107,14 +86,14 @@ int main(int argc, char* argv[])
     arguments::out_file_name = absolutePath.generic_string();
     std::replace(arguments::out_file_name.begin(), arguments::out_file_name.end(), '\\', '/');
 
-
+    
     // Print the extracted arguments:
     cout << "[  Input_name  ] : " << arguments::in_file_name << endl;
     cout << "[  Output_name ] : " << arguments::out_file_name << endl;
     cout << "[   Reference  ] = " << center_name << endl;
     cout << "[    Threads   ] = " << numThreads << endl;
     cout << "[Divide_conquer] = " << thresh2 << endl;
-
+    
     threadPool0 = new ThreadPool(numThreads);
 
     std::vector<std::string> name;
@@ -142,9 +121,9 @@ int main(int argc, char* argv[])
             exit(-1);
         }
         MAFinfo.path = arguments::out_file_name + "/maf/";
-        MAFinfo.thresh1 = 100; //æœ€çŸ­é•¿åº¦
-        MAFinfo.thresh2 = 1;   //æœ€å°è¡Œæ•°
-        MAFinfo.thresh3 = 94;  //æœ€ä½åˆ†æ•°
+        MAFinfo.thresh1 = 100; //×î¶Ì³¤¶È
+        MAFinfo.thresh2 = 1;   //×îĞ¡ĞĞÊı
+        MAFinfo.thresh3 = 94;  //×îµÍ·ÖÊı
     }
     else if ((arguments::out_file_name.substr(arguments::out_file_name.find_last_of('.') + 1).compare("fasta")) == 0)
     {
@@ -155,11 +134,11 @@ int main(int argc, char* argv[])
             std::cout << "Folder creation error\n";
             exit(-1);
         }
-        if (my_mk_dir(arguments::out_file_name + "/maf/") != 0)
-        {
+	if (my_mk_dir(arguments::out_file_name + "/maf/") != 0)
+	{
             std::cout << arguments::out_file_name + "/maf/" << "; Folder creation error\n";
-            exit(-1);
-        }
+	    exit(-1);
+	}
     }
     else {
         std::cout << "The output file path is wrong.[Please use .maf or .fasta as the file suffix]" << std::endl;
@@ -201,7 +180,7 @@ int main(int argc, char* argv[])
     else if ((arguments::in_file_name.substr(arguments::in_file_name.find_last_of('.') + 1).compare("fasta")) == 0)
     {
         std::cout << "1 files\n";
-        std::ifstream ifs(arguments::in_file_name, std::ios::binary | std::ios::in); //åˆ¤æ–­è¾“å…¥è·¯å¾„åˆæ³•å¦
+        std::ifstream ifs(arguments::in_file_name, std::ios::binary | std::ios::in); //ÅĞ¶ÏÊäÈëÂ·¾¶ºÏ·¨·ñ
         if (!ifs)
         {
             std::cout << "cannot access file " << arguments::in_file_name << '\n';
@@ -211,11 +190,11 @@ int main(int argc, char* argv[])
         ifs.clear();
     }
 
-    //ç¡®å®šä¸­å¿ƒåºåˆ—
+    //È·¶¨ÖĞĞÄĞòÁĞ
     if (name.size() < 2)
     {
         std::cout << "The number of input sequences is less than two!\n";
-        exit(1);  //æ•°æ®wæ¡æ•°å°‘äº2ï¼Œé€€å‡º
+        exit(1);  //Êı¾İwÌõÊıÉÙÓÚ2£¬ÍË³ö
     }
     auto maxIt = std::max_element(non_Length.begin(), non_Length.end());
     size_t maxIndex = std::distance(non_Length.begin(), maxIt);
@@ -223,7 +202,7 @@ int main(int argc, char* argv[])
         for (size_t i = 0; i != name.size(); ++i)
             if (name[i] == center_name)
             {
-                maxIndex = i;//æŒ‡å®šä¸­å¿ƒåºåˆ—
+                maxIndex = i;//Ö¸¶¨ÖĞĞÄĞòÁĞ
                 break;
             }
     if (maxIndex != 0)
@@ -238,62 +217,34 @@ int main(int argc, char* argv[])
 
         renameFile(arguments::out_file_name + "/NoN/0", arguments::out_file_name + "/NoN/ztmp");
         renameFile(arguments::out_file_name + "/NoN/" + std::to_string(maxIndex), arguments::out_file_name + "/NoN/0");
-        renameFile(arguments::out_file_name + "/NoN/ztmp", arguments::out_file_name + "/NoN/" + std::to_string(maxIndex));
+        renameFile(arguments::out_file_name + "/NoN/ztmp", arguments::out_file_name + "/NoN/"+ std::to_string(maxIndex));
     }
 
     cout_cur_time();
     std::cout << "End  : " << Length.size() << " sequences were discovered\n";
-
+    
     std::vector<bool> sign;
     for (int i = 0; i < name.size(); i++)
         sign.push_back(true);
     //for (int i = 0; i < name.size(); i++)
     //    std::cout << name[i] << "\t" << Length[i] << "\t" << TU[i] << "\n";
-
-    size_t inThreads = 1;
-    size_t numThreadsCeil = numThreads;
-
-    int max_out = max(1, mem_size / 90);
-    if (numThreadsCeil > (name.size() - 1))
-    {
-        if ((name.size() - 1) > max_out)
-        {
-            inThreads = static_cast<int>(std::ceil(1.0 * numThreads / max_out));
-            numThreadsCeil = max_out;
-        }
-        else
-        {
-            inThreads = static_cast<int>(std::ceil(1.0 * numThreads / (name.size() - 1)));
-            numThreadsCeil = name.size() - 1;
-        }
-    }
-
-
+    
     cout_cur_time();
     std::cout << "Start: pairwise sequence alignment with mummer4.0\n";
-    std::cout << "                    | Info : Thread num of mynuc : " << inThreads << "\n";
-    std::cout << "                    | Info : Thread num of halign : " << numThreadsCeil << "\n";
-    const auto align_start = std::chrono::high_resolution_clock::now();
-
-
-    auto insertions = mum_main(name, Length, non_Length, TU, sign, FAorMA, thresh2, inThreads, filter_level);
+    auto insertions = mum_main(name, Length, non_Length, TU, sign, FAorMA, thresh2);
     cout_cur_time();
     std::cout << "End  : pairwise sequence alignment with mummer4.0\n";
-    std::cout << "                    | Info : PSA time consumes : " << (std::chrono::high_resolution_clock::now() - align_start) << "\n"; //è¾“å‡ºæ¯”å¯¹è€—è´¹æ—¶é—´
-    std::cout << "                    | Info : PSA memory peak   : " << getPeakRSS() << " B\n";//è¾“å‡ºå†…å­˜è€—è´¹
-
-
-    size_t centre_index = 0;//ä¸­å¿ƒåºåˆ—  æ°¸è¿œä¸º0
+    size_t centre_index = 0;//ÖĞĞÄĞòÁĞ  ÓÀÔ¶Îª0
     multiz_num = name.size() - 1;
-
+    
     threadPool2 = threadPool0;
 
     if ((arguments::out_file_name.substr(arguments::out_file_name.find_last_of('.') + 1).compare("fasta")) == 0)
     {
-        //æ’å…¥
+        //²åÈë
         cout_cur_time();
         std::cout << "Start: Build alignment and output\n";
-        std::ofstream ofs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::out); //åˆ¤æ–­è¾“å‡ºè·¯å¾„åˆæ³•å¦
+        std::ofstream ofs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::out); //ÅĞ¶ÏÊä³öÂ·¾¶ºÏ·¨·ñ
         if (!ofs)
         {
             std::cout << "cannot write file " << arguments::out_file_name + "/result.fasta" << '\n';
@@ -302,7 +253,7 @@ int main(int argc, char* argv[])
         auto all_size = utils::mum_insert_and_write_fasta(ofs, insertions, name, sign, Length, mg_tag);
         ofs.close();
 
-        std::ifstream ifs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::in); //åˆ¤æ–­è¾“å…¥è·¯å¾„åˆæ³•å¦
+        std::ifstream ifs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::in); //ÅĞ¶ÏÊäÈëÂ·¾¶ºÏ·¨·ñ
         if (!ifs)
         {
             std::cout << "cannot access file " << arguments::out_file_name + "/result.fasta" << '\n';
@@ -343,25 +294,25 @@ int main(int argc, char* argv[])
     {
         cout_cur_time();
         std::cout << "Start: Build alignment and output\n";
-        //æ’å…¥å¹¶è¾“å‡ºfasta
-        std::ofstream ofs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::out); //åˆ¤æ–­è¾“å‡ºè·¯å¾„åˆæ³•å¦
+        //²åÈë²¢Êä³öfasta
+        std::ofstream ofs(arguments::out_file_name + "/result.fasta", std::ios::binary | std::ios::out); //ÅĞ¶ÏÊä³öÂ·¾¶ºÏ·¨·ñ
         if (!ofs)
         {
             std::cout << "cannot write file " << arguments::out_file_name + "/result.fasta" << '\n';
             exit(1);
         }
         auto all_size = utils::mum_insert_and_write_fasta(ofs, insertions, name, sign, Length, mg_tag);
-        std::cout << "                    | Info : Multiple sequence alignment length = " << all_size << "\n";//è¾“å‡ºå†…å­˜è€—è´¹
+        std::cout << "                    | Info : Multiple sequence alignment length = " << all_size << "\n";//Êä³öÄÚ´æºÄ·Ñ
         ofs.close();
         cout_cur_time();
         std::cout << "End  : Build alignment and output\n";
-
-        const auto P1 = std::chrono::high_resolution_clock::now();
-        //è¯»å–fastaå¹¶ç­›é€‰å¤§maf
+        
+	const auto P1 = std::chrono::high_resolution_clock::now();
+        //¶ÁÈ¡fasta²¢É¸Ñ¡´ómaf
         cout_cur_time();
         std::cout << "Start: Multiz merges...\n";
 
-        //åˆå¹¶å°maf
+       //ºÏ²¢Ğ¡maf
         const auto align_2 = std::chrono::high_resolution_clock::now();
         const auto align_sv = std::chrono::high_resolution_clock::now();
         my_mul_main(multiz_num, (char*)(MAFinfo.path).data());
@@ -370,8 +321,8 @@ int main(int argc, char* argv[])
         const auto maf_point = std::chrono::high_resolution_clock::now();
 
         Stream::main_maf2(centre_index, name, Length, sign, MAFinfo);
-        std::cout << "                    | Info : MGA.maf consumes   : " << (std::chrono::high_resolution_clock::now() - maf_point) << "\n"; //è¾“å‡ºæ€»è€—è´¹æ—¶é—´
-        std::cout << "                    | Info : MGA.maf mem usage  : " << getPeakRSS() << " B" << std::endl;//è¾“å‡ºå†…å­˜è€—è´¹
+        std::cout << "                    | Info : MGA.maf consumes   : " << (std::chrono::high_resolution_clock::now() - maf_point) << "\n"; //Êä³ö×ÜºÄ·ÑÊ±¼ä
+        std::cout << "                    | Info : MGA.maf mem usage  : " << getPeakRSS() << " B" << std::endl;//Êä³öÄÚ´æºÄ·Ñ
         renameAndMoveFile(arguments::out_file_name + "/maf/small.maf");
         deleteDirectory(arguments::out_file_name + "/fasta");
         deleteDirectory(arguments::out_file_name + "/maf");
@@ -382,8 +333,8 @@ int main(int argc, char* argv[])
     delete threadPool2;
     deleteDirectory(arguments::out_file_name + "/NoN");
     std::cout << "                    | Info : Current pid   : " << getpid() << std::endl;
-    std::cout << "                    | Info : Time consumes : " << (std::chrono::high_resolution_clock::now() - start_point) << "\n"; //è¾“å‡ºæ€»è€—è´¹æ—¶é—´
-    std::cout << "                    | Info : Memory usage  : " << getPeakRSS() << " B" << std::endl;//è¾“å‡ºå†…å­˜è€—è´¹
+    std::cout << "                    | Info : Time consumes : " << (std::chrono::high_resolution_clock::now() - start_point) << "\n"; //Êä³ö×ÜºÄ·ÑÊ±¼ä
+    std::cout << "                    | Info : Memory usage  : " << getPeakRSS() << " B" << std::endl;//Êä³öÄÚ´æºÄ·Ñ
     std::cout << "                    | Info : Finished\n";
     std::cout << "http://lab.malab.cn/soft/halign/\n";
     return 0;

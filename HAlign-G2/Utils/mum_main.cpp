@@ -1,9 +1,6 @@
 #include "mum_main.hpp"
-#define DEBUG_PATH 0
-
-#include <filesystem>
 std::map<std::thread::id, Kband*> threadMAP;
-//deltaå½¢å¼çš„åŒæºåŒºé—´è½¬ä¸ºh4çš„insertå½¢å¼
+//deltaĞÎÊ½µÄÍ¬Ô´Çø¼ä×ªÎªh4µÄinsertĞÎÊ½
 void get_inserts(std::vector<utils::Insertion>& inserts_1, std::vector<utils::Insertion>& inserts_2, std::vector <long>& numbers, size_t start1, size_t start2)
 {
     size_t index = 0;
@@ -36,7 +33,7 @@ void get_inserts(std::vector<utils::Insertion>& inserts_1, std::vector<utils::In
     }
 }
 
-//åºåˆ—é€†è¡¥
+//ĞòÁĞÄæ²¹
 void nibu(std::string &str, bool TU)
 {
     std::reverse(str.begin(), str.end());
@@ -78,25 +75,25 @@ void nibu(std::string &str, bool TU)
     return ;
 }
 
-//deltaä¹‹é—´æ’å…¥å¯¹é½ï¼ŒSVä¸“å±ï¼Œè¾“å‡º
+//deltaÖ®¼ä²åÈë¶ÔÆë£¬SV×¨Êô£¬Êä³ö
 void align_delta_sv(std::string& aligned_reference, std::string& aligned_query, std::vector<long>& numbers) {
     size_t index = 0;
     for (const auto& num : numbers) {
-        if (num > 0) { // ç¼ºå¤±
+        if (num > 0) { // È±Ê§
             index += num;
             aligned_query.insert(index - 1, "-");
         }
-        else if (num < 0) { // æ’å…¥
+        else if (num < 0) { // ²åÈë
             index += std::abs(num);
             aligned_reference.insert(index - 1, "-");
         }
     }
 }
 
-//insertæ’å…¥å¯¹é½ï¼Œé‡å new_SVä¸“å±ï¼Œè¾“å‡º
+//insert²åÈë¶ÔÆë£¬ÖØµşnew_SV×¨Êô£¬Êä³ö
 void align_insert_sv(std::string& aligned_reference, std::string& aligned_query, std::vector <utils::Insertion>& insertA, std::vector <utils::Insertion>& insertB) {
     size_t index = 0;
-    // é€†åºéå†
+    // ÄæĞò±éÀú
     for (auto it = insertA.rbegin(); it != insertA.rend(); ++it) {
         const utils::Insertion& insert = *it;
         aligned_reference.insert(insert.index, insert.number, '-');
@@ -108,26 +105,26 @@ void align_insert_sv(std::string& aligned_reference, std::string& aligned_query,
 }
 
 
-//è¯»å–deltaæ–‡ä»¶ï¼Œè·å–åŒæºåŒºé—´+svï¼Œå˜æ¢ç´¢å¼•ï¼Œå¾—åˆ°æ–¹å‘
+//¶ÁÈ¡deltaÎÄ¼ş£¬»ñÈ¡Í¬Ô´Çø¼ä+sv£¬±ä»»Ë÷Òı£¬µÃµ½·½Ïò
 bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_filename, std::string seq_file, size_t lengthA, size_t lengthB, bool TU) {
-    std::ifstream file; // å¤–éƒ¨å£°æ˜
+    std::ifstream file; // Íâ²¿ÉùÃ÷
 
     {
-        std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // åœ¨ç”³è¯·file-numberæ—¶åŠ é”
-        std::ifstream tempFile(delta_filename); // å†…éƒ¨å®šä¹‰
+        std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // ÔÚÉêÇëfile-numberÊ±¼ÓËø
+        std::ifstream tempFile(delta_filename); // ÄÚ²¿¶¨Òå
 	//std::cout << "now:"<< delta_filename<<"\n";
         if (!tempFile.is_open()) {
             std::cerr << "Error opening file " <<delta_filename<< std::endl;
             return false;
         }
-        std::swap(file, tempFile); // äº¤æ¢å¯¹è±¡
-    } // tempFile è¶…å‡ºä½œç”¨åŸŸï¼Œåœ¨å…¶ææ„æ—¶ä¼šå…³é—­æ–‡ä»¶
+        std::swap(file, tempFile); // ½»»»¶ÔÏó
+    } // tempFile ³¬³ö×÷ÓÃÓò£¬ÔÚÆäÎö¹¹Ê±»á¹Ø±ÕÎÄ¼ş
     
     
     std::string line, tmpline1,tmpline2;
-    std::getline(file, line);//ç¬¬ä¸€è¡Œ ä¸¤ä¸ªè·¯å¾„
-    std::getline(file, line);//ç¬¬äºŒè¡Œ NUCMER
-    std::getline(file, line);//ç¬¬ä¸‰è¡Œ > name1 name2 len1 len2
+    std::getline(file, line);//µÚÒ»ĞĞ Á½¸öÂ·¾¶
+    std::getline(file, line);//µÚ¶şĞĞ NUCMER
+    std::getline(file, line);//µÚÈıĞĞ > name1 name2 len1 len2
 
     
     size_t length_a, length_b;
@@ -141,7 +138,7 @@ bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_f
     while (true) {
         std::getline(file, line);
         if (line.empty()) break;
-        // è§£ææ–‡ä»¶å†…å®¹å¹¶å¡«å……Mum_struct
+        // ½âÎöÎÄ¼şÄÚÈİ²¢Ìî³äMum_struct
         std::istringstream iss(line);
         size_t start1, end1, start2, end2;
         iss >> start1 >> end1 >> start2 >> end2;
@@ -163,27 +160,27 @@ bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_f
     }
 
     
-    // åˆ¤æ–­æ–¹å‘ï¼Œè½¬æ¢ç´¢å¼•
+    // ÅĞ¶Ï·½Ïò£¬×ª»»Ë÷Òı
     bool fangxiang = true;
     if (NUM1 >= NUM0) {
-        fangxiang = true; // æ­£å‘
+        fangxiang = true; // ÕıÏò
         for (auto& struct_item : Structs) {
             struct_item.start1 -= 1;
             if (struct_item.start2 > struct_item.end2) {
-                struct_item.tag = -1; // åè½¬ç»“æ„å˜å¼‚
+                struct_item.tag = -1; // ·´×ª½á¹¹±äÒì
                 std::swap(struct_item.start2, struct_item.end2);
             }
             struct_item.start2 -= 1;
         }
     }
     else {
-        fangxiang = false; // åå‘
-//# å°†åŸåºåˆ—åå‘!!!!!!!!!!!!!   strat       
+        fangxiang = false; // ·´Ïò
+//# ½«Ô­ĞòÁĞ·´Ïò!!!!!!!!!!!!!   strat       
         std::fstream nibufile;
         {
             std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); 
             std::fstream tmp_nibu(seq_file, std::ios::in | std::ios::out);
-            std::swap(nibufile, tmp_nibu); // äº¤æ¢å¯¹è±¡
+            std::swap(nibufile, tmp_nibu); // ½»»»¶ÔÏó
         }
         
         if (nibufile.is_open())
@@ -197,15 +194,15 @@ bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_f
             tmpline2 = "";
         }
         else 
-            std::cerr << "æ— æ³•æ‰“å¼€æ–‡ä»¶" << std::endl;
-//# å°†åŸåºåˆ—åå‘!!!!!!!!!!!!!!   end
+            std::cerr << "ÎŞ·¨´ò¿ªÎÄ¼ş" << std::endl;
+//# ½«Ô­ĞòÁĞ·´Ïò!!!!!!!!!!!!!!   end
         for (auto& struct_item : Structs) {
             struct_item.start1 -= 1;
             if (struct_item.start2 > struct_item.end2) {
                 std::swap(struct_item.start2, struct_item.end2);
             }
             else {
-                struct_item.tag = -1; // åè½¬ç»“æ„å˜å¼‚
+                struct_item.tag = -1; // ·´×ª½á¹¹±äÒì
             }
             struct_item.start2 -= 1;
             size_t tmp = lengthB - struct_item.start2;
@@ -221,9 +218,9 @@ bool read_delta_get_struct(std::vector<Mum_struct>& Structs, std::string delta_f
     return fangxiang;
 }
 
-//æ±‚å…³é”®è·¯å¾„ï¼Œå°†å…¶tagä¸º1ï¼Œå…¶ä½™æ˜“ä½svä¸º0ï¼Œå€’ä½ä¸º-1
+//Çó¹Ø¼üÂ·¾¶£¬½«ÆätagÎª1£¬ÆäÓàÒ×Î»svÎª0£¬µ¹Î»Îª-1
 void max_weight_increasing_subsequence(std::vector<Mum_struct>& struct_list) {
-    // æ‰¾åˆ°tag=1çš„structä¸­æœ€é•¿çš„ä¸Šå‡å­åºåˆ—
+    // ÕÒµ½tag=1µÄstructÖĞ×î³¤µÄÉÏÉı×ÓĞòÁĞ
     std::vector<size_t> start;
     std::vector<size_t> length;
     for (const auto& s : struct_list) {
@@ -239,10 +236,10 @@ void max_weight_increasing_subsequence(std::vector<Mum_struct>& struct_list) {
         return;
     }
 
-    // dp[i] è¡¨ç¤ºä»¥ start[i] ç»“å°¾çš„æœ€å¤§æƒä¸Šå‡å­åºåˆ—çš„æƒé‡å’Œ
+    // dp[i] ±íÊ¾ÒÔ start[i] ½áÎ²µÄ×î´óÈ¨ÉÏÉı×ÓĞòÁĞµÄÈ¨ÖØºÍ
     std::vector<size_t> dp = length;
 
-    // è®°å½•æ¯ä¸ªä½ç½®çš„å‰ä¸€ä¸ªä½ç½®ï¼Œç”¨äºæ„å»ºç»“æœ
+    // ¼ÇÂ¼Ã¿¸öÎ»ÖÃµÄÇ°Ò»¸öÎ»ÖÃ£¬ÓÃÓÚ¹¹½¨½á¹û
     std::vector<int> prev(n, -1);
 
     for (size_t i = 1; i < n; ++i) {
@@ -254,10 +251,10 @@ void max_weight_increasing_subsequence(std::vector<Mum_struct>& struct_list) {
         }
     }
 
-    // æ‰¾åˆ°æœ€å¤§æƒä¸Šå‡å­åºåˆ—çš„ç»“æŸä½ç½®
+    // ÕÒµ½×î´óÈ¨ÉÏÉı×ÓĞòÁĞµÄ½áÊøÎ»ÖÃ
     auto max_index = std::max_element(dp.begin(), dp.end()) - dp.begin();
 
-    // æ„å»ºæœ€å¤§æƒä¸Šå‡å­åºåˆ—çš„ç´¢å¼•åˆ—è¡¨
+    // ¹¹½¨×î´óÈ¨ÉÏÉı×ÓĞòÁĞµÄË÷ÒıÁĞ±í
     std::vector<size_t> result;
     while (max_index != -1) {
         result.insert(result.begin(), start[max_index]);
@@ -294,7 +291,7 @@ void cut_and_get_inserts(std::vector<Mum_struct_insert>& new_SV, std::vector<uti
     new_sv.end2 = end2;
     new_sv.tag = 0;
 
-    // åˆå§‹åŒ–å¯¹é½åçš„ç»“æœå­—ç¬¦ä¸²
+    // ³õÊ¼»¯¶ÔÆëºóµÄ½á¹û×Ö·û´®
     size_t index = 0;
     size_t num1 = 0, num2 = 0;
     std::vector<utils::Insertion>().swap(Ainsert);
@@ -406,9 +403,9 @@ void cut_and_get_inserts(std::vector<Mum_struct_insert>& new_SV, std::vector<uti
         return;
 
 
-    // åŒæ­¥é€†åºéå†copyVectorAå’ŒAinsert
-    std::reverse_iterator<std::vector<utils::Insertion>::iterator> itA = copyVectorA.rbegin(); // é€†åºéå†copyVectorAçš„èµ·å§‹è¿­ä»£å™¨
-    std::reverse_iterator<std::vector<utils::Insertion>::iterator> itB = Ainsert.rbegin(); // é€†åºéå†Ainsertçš„èµ·å§‹è¿­ä»£å™¨
+    // Í¬²½ÄæĞò±éÀúcopyVectorAºÍAinsert
+    std::reverse_iterator<std::vector<utils::Insertion>::iterator> itA = copyVectorA.rbegin(); // ÄæĞò±éÀúcopyVectorAµÄÆğÊ¼µü´úÆ÷
+    std::reverse_iterator<std::vector<utils::Insertion>::iterator> itB = Ainsert.rbegin(); // ÄæĞò±éÀúAinsertµÄÆğÊ¼µü´úÆ÷
 
     while (itA != copyVectorA.rend()) {
         if (itB != Ainsert.rend())
@@ -436,8 +433,8 @@ void cut_and_get_inserts(std::vector<Mum_struct_insert>& new_SV, std::vector<uti
         }
     }
 
-    itA = copyVectorB.rbegin(); // é€†åºéå†copyVectorAçš„èµ·å§‹è¿­ä»£å™¨
-    itB = Binsert.rbegin(); // é€†åºéå†Ainsertçš„èµ·å§‹è¿­ä»£å™¨
+    itA = copyVectorB.rbegin(); // ÄæĞò±éÀúcopyVectorAµÄÆğÊ¼µü´úÆ÷
+    itB = Binsert.rbegin(); // ÄæĞò±éÀúAinsertµÄÆğÊ¼µü´úÆ÷
 
     while (itA != copyVectorB.rend()) {
         if (itB != Binsert.rend())
@@ -490,156 +487,9 @@ void cut_and_get_inserts(std::vector<Mum_struct_insert>& new_SV, std::vector<uti
     */
 }
 
-void BinaryMUMSave(int I, bool FAorMA, size_t inThreads, int filter_level)
-{
-	// æ„é€ å‚æ•°å­—ç¬¦ä¸²
-	std::string arg0;
-
-    namespace fs = std::filesystem;
-    arg0 = "mynuc";
-    std::string dir_to_create = arguments::out_file_name + "/save";
-        try {
-        if (!fs::exists(dir_to_create)) {
-            if (fs::create_directories(dir_to_create)) {
-                std::cout << "Directory created: " << dir_to_create << std::endl;
-            } else {
-                std::cout << "Failed to create directory: " << dir_to_create << std::endl;
-            }
-        } else {
-            std::cout << "Directory already exists: " << dir_to_create << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cout << "Error creating directory: " << e.what() << std::endl;
-    }
-
-    std::string arg1 = arguments::out_file_name + "/NoN/0";
-    std::string arg2 = arguments::out_file_name + "/NoN/" + std::to_string(I);
-    std::string arg3 = arguments::out_file_name + "/maf/" + std::to_string(I);
-	std::string arg5 = "--save";
-	std::string arg6 = arguments::out_file_name + "/save/save";
-	std::string arg7 = std::to_string(filter_level);
-	// åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„
-	std::vector<char*> args;
-	args.push_back(const_cast<char*>(arg0.c_str()));
-	args.push_back(const_cast<char*>(arg1.c_str()));
-	args.push_back(const_cast<char*>(arg2.c_str()));
-	args.push_back(const_cast<char*>(arg3.c_str()));
-	std::string arg4 = std::to_string(inThreads);
-	args.push_back(const_cast<char*>(arg4.c_str()));
-	args.push_back(const_cast<char*>(arg5.c_str()));
-	args.push_back(const_cast<char*>(arg6.c_str()));
-	args.push_back(const_cast<char*>(arg7.c_str()));
-	args.push_back(nullptr);  // æœ€åä¸€ä¸ªå…ƒç´ å¿…é¡»æ˜¯ç©ºæŒ‡é’ˆ
-
-	// åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„çš„å‰¯æœ¬
-	char** argv = new char* [args.size()];
-	for (size_t i = 0; i < args.size(); ++i) {
-		argv[i] = args[i];
-	}
-#if DEBUG_PATH
-    std::cout << "Command: ";
-    for (size_t i = 0; i < args.size() - 1; ++i) {  // å¿½ç•¥æœ€åçš„ç©ºæŒ‡é’ˆ
-        std::cout << argv[i] << " ";
-    }
-    std::cout << std::endl;
-#endif
-	pid_t pid;
-
-	{
-		std::lock_guard<std::mutex> lock(threadPool0->mutex_pid);
-		pid = fork();
-	}
-
-	if (pid < 0) {
-		std::cerr << "Error: fork failed." << std::endl;
-		return;
-	}
-	else if (pid == 0) {
-		int exitval = 0;
-		// å­è¿›ç¨‹æ‰§è¡Œå‡½æ•°2çš„ä»£ç 
-		exitval = execvp(arg0.c_str(), argv);
-
-		delete[]argv;
-		exit(0);
-	}
-	else {
-		// çˆ¶è¿›ç¨‹ç»§ç»­æ‰§è¡Œå…¶ä»–æ“ä½œ
-		int status;
-		waitpid(pid, &status, 0);  // ç­‰å¾…å­è¿›ç¨‹ç»“æŸ
-	}
-	return;
-}
-
-void BinaryMUMLoad(int I, bool FAorMA, size_t inThreads, int filter_level)
-{
-	// æ„é€ å‚æ•°å­—ç¬¦ä¸²
-	std::string arg0;
-
-
-
-    arg0 = "mynuc";
-
-    std::string arg1 = arguments::out_file_name + "/NoN/0";
-    std::string arg2 = arguments::out_file_name + "/NoN/" + std::to_string(I);
-    std::string arg3 = arguments::out_file_name + "/maf/" + std::to_string(I);
-	std::string arg5 = "--load";
-	std::string arg6 = arguments::out_file_name + "/save/save";
-	std::string arg7 = std::to_string(filter_level);
-	// åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„
-	std::vector<char*> args;
-	args.push_back(const_cast<char*>(arg0.c_str()));
-	args.push_back(const_cast<char*>(arg1.c_str()));
-	args.push_back(const_cast<char*>(arg2.c_str()));
-	args.push_back(const_cast<char*>(arg3.c_str()));
-	std::string arg4 = std::to_string(inThreads);  // signle thread
-	args.push_back(const_cast<char*>(arg4.c_str()));
-	args.push_back(const_cast<char*>(arg5.c_str()));
-	args.push_back(const_cast<char*>(arg6.c_str()));
-	args.push_back(const_cast<char*>(arg7.c_str()));
-	args.push_back(nullptr);  // æœ€åä¸€ä¸ªå…ƒç´ å¿…é¡»æ˜¯ç©ºæŒ‡é’ˆ
-
-	// åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„çš„å‰¯æœ¬
-	char** argv = new char* [args.size()];
-	for (size_t i = 0; i < args.size(); ++i) {
-		argv[i] = args[i];
-	}
-#if DEBUG_PATH
-    std::cout << "Command: ";
-    for (size_t i = 0; i < args.size() - 1; ++i) {  // å¿½ç•¥æœ€åçš„ç©ºæŒ‡é’ˆ
-        std::cout << argv[i] << " ";
-    }
-    std::cout << std::endl;
-#endif
-	pid_t pid;
-
-	{
-		std::lock_guard<std::mutex> lock(threadPool0->mutex_pid);
-		pid = fork();
-	}
-
-	if (pid < 0) {
-		std::cerr << "Error: fork failed." << std::endl;
-		return;
-	}
-	else if (pid == 0) {
-		int exitval = 0;
-		// å­è¿›ç¨‹æ‰§è¡Œå‡½æ•°2çš„ä»£ç 
-		exitval = execvp(arg0.c_str(), argv);
-
-		delete[]argv;
-		exit(0);
-	}
-	else {
-		// çˆ¶è¿›ç¨‹ç»§ç»­æ‰§è¡Œå…¶ä»–æ“ä½œ
-		int status;
-		waitpid(pid, &status, 0);  // ç­‰å¾…å­è¿›ç¨‹ç»“æŸ
-	}
-	return;
-}
-
 void BinaryMUM(int I, bool FAorMA)
 {
-    // æ„é€ å‚æ•°å­—ç¬¦ä¸²
+    // ¹¹Ôì²ÎÊı×Ö·û´®
     std::string arg0;
     if(FAorMA) //true maf q
         arg0 = "mynucq";
@@ -649,15 +499,15 @@ void BinaryMUM(int I, bool FAorMA)
     std::string arg2 = arguments::out_file_name + "/NoN/" + std::to_string(I);
     std::string arg3 = arguments::out_file_name + "/maf/" + std::to_string(I);
 
-    // åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„
+    // ´´½¨×Ö·ûÖ¸ÕëÊı×é
     std::vector<char*> args;
     args.push_back(const_cast<char*>(arg0.c_str()));
     args.push_back(const_cast<char*>(arg1.c_str()));
     args.push_back(const_cast<char*>(arg2.c_str()));
     args.push_back(const_cast<char*>(arg3.c_str()));
-    args.push_back(nullptr);  // æœ€åä¸€ä¸ªå…ƒç´ å¿…é¡»æ˜¯ç©ºæŒ‡é’ˆ
+    args.push_back(nullptr);  // ×îºóÒ»¸öÔªËØ±ØĞëÊÇ¿ÕÖ¸Õë
 
-    // åˆ›å»ºå­—ç¬¦æŒ‡é’ˆæ•°ç»„çš„å‰¯æœ¬
+    // ´´½¨×Ö·ûÖ¸ÕëÊı×éµÄ¸±±¾
     char** argv = new char* [args.size()];
     for (size_t i = 0; i < args.size(); ++i) {
         argv[i] = args[i];
@@ -675,7 +525,7 @@ void BinaryMUM(int I, bool FAorMA)
         return;
     }
     else if (pid == 0) {
-        // å­è¿›ç¨‹æ‰§è¡Œå‡½æ•°2çš„ä»£ç 
+        // ×Ó½ø³ÌÖ´ĞĞº¯Êı2µÄ´úÂë
         if (FAorMA) //true maf q
             execvp("mynucq", argv);
         else       //false fasta 1
@@ -684,15 +534,15 @@ void BinaryMUM(int I, bool FAorMA)
         exit(0);
     }
     else {
-        // çˆ¶è¿›ç¨‹ç»§ç»­æ‰§è¡Œå…¶ä»–æ“ä½œ
+        // ¸¸½ø³Ì¼ÌĞøÖ´ĞĞÆäËû²Ù×÷
         int status;
-        waitpid(pid, &status, 0);  // ç­‰å¾…å­è¿›ç¨‹ç»“æŸ
+        waitpid(pid, &status, 0);  // µÈ´ı×Ó½ø³Ì½áÊø
     }
     return;
 }
 
 
-void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std::array<std::vector<utils::Insertion>, 2>>& all_pairwise_gaps, std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2, size_t inThreads, int filter_level)
+void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std::array<std::vector<utils::Insertion>, 2>>& all_pairwise_gaps, std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2)
 {
     std::string nameA = name[0];
     std::string nameB = name[I];
@@ -709,17 +559,11 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
     std::vector<Mum_struct> main_Structs;
     std::vector<Mum_struct> sv_Structs;
 
-    //##### è°ƒç”¨äºŒè¿›åˆ¶
+    //##### µ÷ÓÃ¶ş½øÖÆ
 
+    BinaryMUM(I, FAorMA);
 
-    if (I == 1)
-		BinaryMUMSave(I, FAorMA, inThreads, filter_level);
-	else
-		BinaryMUMLoad(I, FAorMA, inThreads, filter_level);
-
-    // BinaryMUM(I, FAorMA);
-
-    //##### è¯»å–deltaæ–‡ä»¶ï¼Œè·å–åŒæºåŒºé—´+svï¼Œå˜æ¢ç´¢å¼•ï¼Œå¾—åˆ°æ–¹å‘
+    //##### ¶ÁÈ¡deltaÎÄ¼ş£¬»ñÈ¡Í¬Ô´Çø¼ä+sv£¬±ä»»Ë÷Òı£¬µÃµ½·½Ïò
     sign[I] = read_delta_get_struct(Structs, delta_file, seq_file, LengthA, LengthB, TU[I]);
 
     size_t max_weight = 0;
@@ -728,7 +572,7 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
     //std::cout << "max_weight_all " << max_weight<<"\n";
 
 
-    //##### refæœ€å¤§æƒä¸Šå‡å­åºåˆ—ï¼ˆå…³é”®è·¯å¾„ï¼‰
+    //##### ref×î´óÈ¨ÉÏÉı×ÓĞòÁĞ£¨¹Ø¼üÂ·¾¶£©
     max_weight_increasing_subsequence(Structs);
     /*
     std::cout << "Structs:" << Structs.size() << "\n";
@@ -736,30 +580,30 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
         std::cout << Structs[i].start1 << "\t" << Structs[i].end1 << "\t" << Structs[i].start2 << "\t" << Structs[i].end2 << "\t" << Structs[i].tag << "\n";
     */
 
-    //æ‰“å¼€seqB
+    //´ò¿ªseqB
     auto seqB = std::make_unique<Sequence>(seq_file);
     std::array<std::vector<utils::Insertion>, 2>& pairwise_gaps = all_pairwise_gaps[I];
-    std::vector<utils::Insertion>& A_insert_all = pairwise_gaps[0]; //Açš„å…¨éƒ¨æ’ç©ºä¿¡æ¯ï¼ˆä¸åŒ…æ‹¬ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´ï¼‰
-    std::vector<utils::Insertion>& B_insert_all = pairwise_gaps[1]; //Bçš„å…¨éƒ¨æ’ç©ºä¿¡æ¯ï¼ˆä¸åŒ…æ‹¬ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´ï¼‰
-    std::vector<utils::Insertion> Ainsert; //Açš„å…¨éƒ¨æ’ç©ºä¿¡æ¯ï¼ˆä¸åŒ…æ‹¬ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´ï¼‰
-    std::vector<utils::Insertion> Binsert; //Bçš„å…¨éƒ¨æ’ç©ºä¿¡æ¯ï¼ˆä¸åŒ…æ‹¬ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´ï¼‰
-    quadras diff_area; // ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´
-    quadras fasta_area;// æ‰€æœ‰éåŒæºåŒºé—´
+    std::vector<utils::Insertion>& A_insert_all = pairwise_gaps[0]; //AµÄÈ«²¿²å¿ÕĞÅÏ¢£¨²»°üÀ¨¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä£©
+    std::vector<utils::Insertion>& B_insert_all = pairwise_gaps[1]; //BµÄÈ«²¿²å¿ÕĞÅÏ¢£¨²»°üÀ¨¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä£©
+    std::vector<utils::Insertion> Ainsert; //AµÄÈ«²¿²å¿ÕĞÅÏ¢£¨²»°üÀ¨¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä£©
+    std::vector<utils::Insertion> Binsert; //BµÄÈ«²¿²å¿ÕĞÅÏ¢£¨²»°üÀ¨¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä£©
+    quadras diff_area; // ¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä
+    quadras fasta_area;// ËùÓĞ·ÇÍ¬Ô´Çø¼ä
 
     //for (auto& Struct : Structs)
         //std::cout << Struct.start1 << "\t" << Struct.end1 << "\t" << Struct.start2 << "\t" << Struct.end2 << "\t" << Struct.tag << "\n";
 
-    //##### åˆ†å¼€å…³é”®è·¯å¾„å’Œsvï¼Œè®°å½•å…³é”®è·¯å¾„1-1æ˜¯å¦æœ‰sv
+    //##### ·Ö¿ª¹Ø¼üÂ·¾¶ºÍsv£¬¼ÇÂ¼¹Ø¼üÂ·¾¶1-1ÊÇ·ñÓĞsv
     int pre_struct = 1;
     for (auto& struct_item : Structs)
-        if (struct_item.tag == 1) { // å…³é”®è·¯å¾„
+        if (struct_item.tag == 1) { // ¹Ø¼üÂ·¾¶
             if (pre_struct == 0) {
                 struct_item.tag = 0;
             }
             pre_struct = 1;
             main_Structs.push_back(struct_item);
         }
-        else { // ç»“æ„å˜å¼‚
+        else { // ½á¹¹±äÒì
             sv_Structs.push_back(struct_item);
             pre_struct = 0;
         }
@@ -771,12 +615,12 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
         std::sort(main_Structs.begin(), main_Structs.end(), [](const Mum_struct& a, const Mum_struct& b) {
             return a.start1 < b.start1;
             });
-        std::ofstream maf; // å¤–éƒ¨å£°æ˜
+        std::ofstream maf; // Íâ²¿ÉùÃ÷
         {
-            std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // åœ¨ç”³è¯·file-numberæ—¶åŠ é”
-            std::ofstream tempMaf(arguments::out_file_name + "/maf/" + std::to_string(I) + "_main.maf"); // å†…éƒ¨å®šä¹‰
-            std::swap(maf, tempMaf); // äº¤æ¢å¯¹è±¡
-        } // tempMaf è¶…å‡ºä½œç”¨åŸŸï¼Œåœ¨å…¶ææ„æ—¶ä¼šå…³é—­æ–‡ä»¶
+            std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // ÔÚÉêÇëfile-numberÊ±¼ÓËø
+            std::ofstream tempMaf(arguments::out_file_name + "/maf/" + std::to_string(I) + "_main.maf"); // ÄÚ²¿¶¨Òå
+            std::swap(maf, tempMaf); // ½»»»¶ÔÏó
+        } // tempMaf ³¬³ö×÷ÓÃÓò£¬ÔÚÆäÎö¹¹Ê±»á¹Ø±ÕÎÄ¼ş
         maf << "##maf version=1 scoring=lastz.v1.04.00" << std::endl;
         for (auto& structi : main_Structs)
         {
@@ -805,14 +649,14 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
                 fx = "-";
 
             maf << "a score = 0" << std::endl;
-            // æ ¼å¼åŒ–è¾“å‡º
+            // ¸ñÊ½»¯Êä³ö
             maf << "s " << std::left << std::setw(max_name_width) << nameA << std::right << std::setw(12) << a_start << std::setw(12) << a_len
                 << std::setw(2) << "+" << std::setw(12) << LengthA << " " << Aq << std::endl;
             maf << "s " << std::left << std::setw(max_name_width) << nameB << std::right << std::setw(12) << b_start << std::setw(12) << b_len
                 << std::setw(2) << fx << std::setw(12) << LengthB << " " << Bq << std::endl << std::endl;
         }
-        maf.close();  // å…³é—­æ–‡ä»¶
-        //##### 0 æˆ–è€… - 1çš„ ç»“æ„å˜å¼‚æŒ‰mafå†™å‡ºã€‚end
+        maf.close();  // ¹Ø±ÕÎÄ¼ş
+        //##### 0 »òÕß - 1µÄ ½á¹¹±äÒì°´mafĞ´³ö¡£end
     }
 
     exit(5);
@@ -941,17 +785,17 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
     }
     //std::cout << "cut_length " << cut_length << "\n";
 
-    if (FAorMA)//maf=1//##### 0 æˆ–è€… - 1çš„ ç»“æ„å˜å¼‚æŒ‰mafå†™å‡ºã€‚start
+    if (FAorMA)//maf=1//##### 0 »òÕß - 1µÄ ½á¹¹±äÒì°´mafĞ´³ö¡£start
     {
         std::sort(sv_Structs.begin(), sv_Structs.end(), [](const Mum_struct& a, const Mum_struct& b) {
             return a.start1 < b.start1;
             });
-        std::ofstream maf; // å¤–éƒ¨å£°æ˜
+        std::ofstream maf; // Íâ²¿ÉùÃ÷
         {
-            std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // åœ¨ç”³è¯·file-numberæ—¶åŠ é”
-            std::ofstream tempMaf(sv_file); // å†…éƒ¨å®šä¹‰
-            std::swap(maf, tempMaf); // äº¤æ¢å¯¹è±¡
-        } // tempMaf è¶…å‡ºä½œç”¨åŸŸï¼Œåœ¨å…¶ææ„æ—¶ä¼šå…³é—­æ–‡ä»¶
+            std::lock_guard<std::mutex> lock(threadPool0->mutex_fp); // ÔÚÉêÇëfile-numberÊ±¼ÓËø
+            std::ofstream tempMaf(sv_file); // ÄÚ²¿¶¨Òå
+            std::swap(maf, tempMaf); // ½»»»¶ÔÏó
+        } // tempMaf ³¬³ö×÷ÓÃÓò£¬ÔÚÆäÎö¹¹Ê±»á¹Ø±ÕÎÄ¼ş
         maf << "##maf version=1 scoring=lastz.v1.04.00" << std::endl;
         for (auto& structi : sv_Structs)
         {
@@ -980,7 +824,7 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
                 fx = "-";
 
             maf << "a score = 0" << std::endl;
-            // æ ¼å¼åŒ–è¾“å‡º
+            // ¸ñÊ½»¯Êä³ö
             maf << "s " << std::left << std::setw(max_name_width) << nameA << std::right << std::setw(12) << a_start << std::setw(12) << a_len
                 << std::setw(2) << "+" << std::setw(12) << LengthA << " " << Aq << std::endl;
             maf << "s " << std::left << std::setw(max_name_width) << nameB << std::right << std::setw(12) << b_start << std::setw(12) << b_len
@@ -1013,25 +857,25 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
                 fx = "-";
 
             maf << "a score = 0" << std::endl;
-            // æ ¼å¼åŒ–è¾“å‡º
+            // ¸ñÊ½»¯Êä³ö
             maf << "s " << std::left << std::setw(max_name_width) << nameA << std::right << std::setw(12) << a_start << std::setw(12) << a_len
                 << std::setw(2) << "+" << std::setw(12) << LengthA << " " << Aq << std::endl;
             maf << "s " << std::left << std::setw(max_name_width) << nameB << std::right << std::setw(12) << b_start << std::setw(12) << b_len
                 << std::setw(2) << fx << std::setw(12) << LengthB << " " << Bq << std::endl << std::endl;
         }
-        maf.close();  // å…³é—­æ–‡ä»¶
-        //##### 0 æˆ–è€… - 1çš„ ç»“æ„å˜å¼‚æŒ‰mafå†™å‡ºã€‚end
+        maf.close();  // ¹Ø±ÕÎÄ¼ş
+        //##### 0 »òÕß - 1µÄ ½á¹¹±äÒì°´mafĞ´³ö¡£end
     }
 
-    //##### ç²¾ç»†æ¯”å¯¹éåŒæºåŒºé—´
-    //##### è¿”å›æ’ç©ºä¿¡æ¯
-    std::vector<utils::Insertion>().swap(Ainsert); //Açš„æ’ç©ºä¿¡æ¯-ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´
-    std::vector<utils::Insertion>().swap(Binsert); //Bçš„æ’ç©ºä¿¡æ¯-ç²¾ç»†æ¯”å¯¹çš„éåŒæºåŒºé—´
+    //##### ¾«Ï¸±È¶Ô·ÇÍ¬Ô´Çø¼ä
+    //##### ·µ»Ø²å¿ÕĞÅÏ¢
+    std::vector<utils::Insertion>().swap(Ainsert); //AµÄ²å¿ÕĞÅÏ¢-¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä
+    std::vector<utils::Insertion>().swap(Binsert); //BµÄ²å¿ÕĞÅÏ¢-¾«Ï¸±È¶ÔµÄ·ÇÍ¬Ô´Çø¼ä
     quadras& diffs = fasta_area;
     Kband* kband = threadMAP[std::this_thread::get_id()];
     for (auto& arr : diffs)
     {
-        auto [lhs_gaps, rhs_gaps] = mum_main_Align(kband, seqA, arr[0], arr[1], seqB, arr[2], arr[3], threshold2); //éåŒæºåŒºåŸŸï¼ŒåŠ¨æ€è§„åˆ’æ¯”å¯¹åˆ†æ²»åˆ°æ¯”threshå°ï¼Œç„¶åk-band
+        auto [lhs_gaps, rhs_gaps] = mum_main_Align(kband, seqA, arr[0], arr[1], seqB, arr[2], arr[3], threshold2); //·ÇÍ¬Ô´ÇøÓò£¬¶¯Ì¬¹æ»®±È¶Ô·ÖÖÎµ½±ÈthreshĞ¡£¬È»ºók-band
         for (int ii = 0; ii < lhs_gaps.size(); ii++)
         {
             pairwise_gaps[0].push_back(utils::Insertion({ (size_t)std::get<0>(lhs_gaps[ii]),(size_t)std::get<1>(lhs_gaps[ii]) }));
@@ -1053,11 +897,11 @@ void mum_main_psa(int I, const std::unique_ptr<Sequence>& seqA, std::vector<std:
         insert().swap(rhs_gaps);
     }
 
-    // æŒ‰ç…§ index è¿›è¡Œæ’åº
+    // °´ÕÕ index ½øĞĞÅÅĞò
     std::sort(pairwise_gaps[0].begin(), pairwise_gaps[0].end(), [](const utils::Insertion& a, const utils::Insertion& b) {
         return a.index < b.index;
         });
-    // æŒ‰ç…§ index è¿›è¡Œæ’åº
+    // °´ÕÕ index ½øĞĞÅÅĞò
     std::sort(pairwise_gaps[1].begin(), pairwise_gaps[1].end(), [](const utils::Insertion& a, const utils::Insertion& b) {
         return a.index < b.index;
         });
@@ -1183,19 +1027,16 @@ std::vector<std::vector<utils::Insertion>> mum_merge_results(const std::vector<s
     return std::move(final_sequence_gaps);
 }
 
-//å¤šç»„nucmeråŒæ—¶è¿è¡Œï¼Œä¸»å‡½æ•°ï¼Œå¤šçº¿ç¨‹
-std::vector<std::vector<utils::Insertion>> mum_main(std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<size_t>& non_Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2, size_t inThreads, int filter_level) {
+//¶à×énucmerÍ¬Ê±ÔËĞĞ£¬Ö÷º¯Êı£¬¶àÏß³Ì
+std::vector<std::vector<utils::Insertion>> mum_main(std::vector<std::string>& name, std::vector<size_t>& Length, std::vector<size_t>& non_Length, std::vector<bool>& TU, std::vector<bool>& sign, bool FAorMA, size_t threshold2) {
     /////////////////////////////////index -3 !
     for (int i = 0; i < threadPool0->Thread_num; i++)
         threadMAP[threadPool0->workers[i].get_id()] = new Kband();
     std::vector<std::array<std::vector<utils::Insertion>, 2>> all_pairwise_gaps(name.size());
     auto seq_ref = std::make_unique<Sequence>(arguments::out_file_name + "/NoN/0");
-    
-    threadPool0->execute(&mum_main_psa, 1, std::cref(seq_ref), std::ref(all_pairwise_gaps), std::ref(name), std::ref(Length), std::ref(TU), std::ref(sign), FAorMA, threshold2, inThreads, filter_level);
-    threadPool0->waitFinished();
-    for (int I = 2; I < name.size(); I++)
+    for (int I = 1; I < name.size(); I++)
     {
-        threadPool0->execute(&mum_main_psa, I, std::cref(seq_ref), std::ref(all_pairwise_gaps), std::ref(name), std::ref(Length), std::ref(TU), std::ref(sign), FAorMA, threshold2, inThreads, filter_level);
+        threadPool0->execute(&mum_main_psa, I, std::cref(seq_ref), std::ref(all_pairwise_gaps), std::ref(name), std::ref(Length), std::ref(TU), std::ref(sign), FAorMA, threshold2);
         //sign[I] = mum_main_psa(I, seq_ref, name[0], name[I], Length[0], Length[I], TU[I]);//return sign[i]
     }
     threadPool0->waitFinished();

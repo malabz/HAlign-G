@@ -6,24 +6,11 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include <filesystem>  // C++17 or later
 using namespace std;
 
-// Helper function to extract the two keys from the block header line
-std::pair<std::string, std::string> extract_keys(const std::string& header) {
-    size_t start = header.find('>') + 1;
-    size_t end1 = header.find(' ', start);
-    size_t start2 = end1 + 1;
-    size_t end2 = header.find(' ', start2);
-
-    std::string first_key = header.substr(start, end1 - start);
-    std::string second_key = header.substr(start2, end2 - start2);
-
-    return std::make_pair(first_key, second_key);
-}
-
-int filter_sub(std::string OPT_AlignName, int filter)
+int filter_main(char* filename)
 {
+    string         OPT_AlignName;                // alignment name parameter
     bool           OPT_QLIS = false;     // do query based LIS
     bool           OPT_RLIS = false;     // do reference based LIS
     bool           OPT_GLIS = false;     // do global LIS
@@ -35,152 +22,33 @@ int filter_sub(std::string OPT_AlignName, int filter)
     float          OPT_MaxOverlap = 100.0;     // maximum olap as % of align len
     float          OPT_Epsilon = -1.0;      // negligible alignment score
     srand(1);
-    if(filter==2)
-        OPT_1to1 = true;
-    else if (filter==1)
-        OPT_QLIS = true;
-    string outfile = OPT_AlignName + ".delta";
 
+    //OPT_1to1 = true;
+    OPT_QLIS = true;
+    OPT_AlignName = std::string(filename);
+    string outfile = OPT_AlignName + ".delta";
+    OPT_AlignName += "_all.delta";
+    //std::cout << OPT_AlignName << "\n";
+    //std::cout << outfile << "\n";
+    //return 0;
+
+    //-- Build the alignment graph from the delta file
     DeltaGraph_t graph;
     graph.build(OPT_AlignName, true);
 
     //-- 1-to-1
-    if (OPT_1to1)
-        graph.flag1to1(OPT_Epsilon, OPT_MaxOverlap);
+    //if (OPT_1to1)
+        //graph.flag1to1(OPT_Epsilon, OPT_MaxOverlap);
+
     //-- Query-based LIS
     if (OPT_QLIS)
         graph.flagQLIS(OPT_Epsilon, OPT_MaxOverlap);
-
+    //std::ofstream fout;fout.open(outfile);
     std::ofstream fout(outfile, std::ios::binary | std::ios::out);
+    //-- Output the filtered delta file
     graph.outputDelta(fout);
     fout.close();
-    return 0;
-}
-
-// Function to sort and write the blocks into separate files
-void sort_delta(std::string file, int filter) {
-    if (filter == 0)
-        return;
-    std::ifstream infile(file);
-    if (!infile) {
-        std::cerr << "Error: Cannot open file " << file << std::endl;
-        return;
-    }
-    //std::cout << file << " sort_delta finish\n";
-    std::string line;
-    std::vector<std::string> header;
-    std::vector<std::vector<std::string>> blocks;
-    std::vector<std::string> current_block;
-
-    // Read the first two lines as header
-    for (int i = 0; i < 2 && std::getline(infile, line); ++i) {
-        header.push_back(line);
-    }
-   // std::cout << file << " sort_delta 1\n";
-    // Read the file and group blocks
-    while (std::getline(infile, line)) {
-        if (line.empty()) continue;
-
-        if (line[0] == '>') {
-            if (!current_block.empty()) {
-                blocks.push_back(current_block);
-                current_block.clear();
-            }
-        }
-        current_block.push_back(line);
-    }
-    infile.close();
-    // Don't forget to push the last block
-    if (!current_block.empty()) {
-        blocks.push_back(current_block);
-    }
-    //std::cout << file << " sort_delta 2\n";
-    // Sort blocks based on the two keys extracted from the block header
-    std::sort(blocks.begin(), blocks.end(), [](const std::vector<std::string>& a, const std::vector<std::string>& b) {
-        auto key_a = extract_keys(a[0]);
-        auto key_b = extract_keys(b[0]);
-        return key_a < key_b;
-        });
-   // std::cout << file << " sort_delta 3\n";
-    // Create the output directory
-    std::string output_dir = file + "_f/";
-    std::filesystem::create_directory(output_dir);
-   // std::cout << file << " sort_delta 4\n";
-    // Write the sorted blocks into separate files
-    std::ofstream outfile;
-    std::pair<std::string, std::string> last_key("", "");
-    int file_index = -1;
-    //std::cout << file << " sort_delta 5\n";
-    for (const auto& block : blocks) {
-        auto current_key = extract_keys(block[0]);
-
-        // If the key changes, start a new file
-        if (current_key != last_key) {
-            if (outfile.is_open()) {
-                outfile.close();
-                filter_sub(output_dir + std::to_string(file_index),filter);
-            }
-            outfile.open(output_dir + std::to_string(++file_index));
-            if (!outfile) {
-                std::cerr << "Error: Cannot create file " << output_dir + std::to_string(file_index) << std::endl;
-                return;
-            }
-
-            // Write the header to the new file
-            for (const auto& h : header) {
-                outfile << h << std::endl;
-            }
-
-            last_key = current_key;
-        }
-
-        // Write the current block to the file
-        for (const auto& line : block) {
-            outfile << line << std::endl;
-        }
-    }
-    //std::cout << file << " sort_delta 6\n";
-    // Close the last file
-    if (outfile.is_open()) {
-        outfile.close();
-        filter_sub(output_dir + std::to_string(file_index),filter);
-    }
-    
-    outfile.open(file);
-    if (!outfile) {
-        std::cerr << "Error: Cannot create file " << file << std::endl;
-        return;
-    }
-    //std::cout << file << " sort_delta 7\n";
-    for (const auto& h : header) {
-        outfile << h << std::endl;
-    }
-    for (int i = 0; i <= file_index; i++)
-    {
-        infile.open(output_dir + std::to_string(i)+".delta");
-        if (!infile) {
-            std::cerr << "Error: Cannot open file " << output_dir + std::to_string(i) + ".delta" << std::endl;
-            return;
-        }
-        int hd = 0;
-        while (std::getline(infile, line)) {
-            hd++;
-            if (hd <= 2)
-                continue;
-            outfile << line << std::endl;
-        }
-        infile.close();
-    }
-    outfile.close();
-   // std::cout << file << " sort_delta finish\n";
-}
-
-int filter_main(char* filename, int filter)
-{
-    string OPT_AlignName = std::string(filename);
-    OPT_AlignName += ".delta";
-    sort_delta(OPT_AlignName, filter);
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 #include <iostream>
@@ -254,14 +122,8 @@ void query_long(mummer::nucmer::FileAligner* aligner, sequence_parser* parser,
 //   ./nuc,path1,path2,out
 //    ./xx 1.fasta 2.fasta 1_2ans
 int main(int argc, char* argv[]) {
-   /*char* filename = new char[strlen(argv[1]) + 1];
-    strcpy(filename, argv[1]);
-    //filter_start
-    filter_main(filename);
-    return 0;*/
 
-    char** new_argv = new char* [9];
-    
+    char** new_argv = new char* [7];
     for (int i = 0; i < 3; ++i) {
         new_argv[i] = new char[strlen(argv[i]) + 1];
         strcpy(new_argv[i], argv[i]);
@@ -272,25 +134,11 @@ int main(int argc, char* argv[]) {
     strcpy(new_argv[4], "nucmer");
     new_argv[5] = new char[10];
     strcpy(new_argv[5], "--threads");
-    new_argv[6] = new char[3];
-    std::string threadnum = argv[4];
-    //std::cout << "threadnum: " << threadnum << std::endl;
-    if (std::stoi(threadnum) > 8)
-        strcpy(new_argv[6], argv[4]);
-    else
-        strcpy(new_argv[6], "8");
-    new_argv[7] = new char[strlen(argv[5]) + 1];
-    strcpy(new_argv[7], argv[5]);
-    new_argv[8] = new char[strlen(argv[6]) + 1];
-    strcpy(new_argv[8], argv[6]);
-    
-    std::string filter_Str = argv[7];
-    int filter = std::stoi(filter_Str);//ɸѡ�ȼ�
+    new_argv[6] = new char[2];
+    strcpy(new_argv[6], "8");
 
     std::ios::sync_with_stdio(false);
-    nucmer_cmdline args(9, new_argv);
-
-
+    nucmer_cmdline args(7, new_argv);
 
     mummer::nucmer::Options opts;
     opts.breaklen(args.breaklen_arg)
@@ -308,8 +156,7 @@ int main(int argc, char* argv[]) {
     if (args.maxmatch_flag) opts.maxmatch();
 
     std::string arg3_string(argv[3]);
-    const std::string output_file = arg3_string + ".delta";
-   // const std::string output_file = arg3_string + ".delta";
+    const std::string output_file = arg3_string + "_all.delta";
     std::ofstream os;
     if (!args.qry_arg.empty()) {
         if (args.qry_arg.size() != 1 && !(args.sam_short_given || args.sam_long_given))
@@ -382,9 +229,9 @@ int main(int argc, char* argv[]) {
 
     char* filename = new char[strlen(argv[3]) + 1];
     strcpy(filename, argv[3]);
-    
-    filter_main(filename,filter);
-
+    //filter_start
+    filter_main(filename);
+    //filter_end
     delete[] filename;
 
     return 0;

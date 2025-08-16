@@ -1,10 +1,10 @@
 CXX = g++
-CXXFLAGS = -O3 -std=c++17 -pthread
+CXXFLAGS = -O3 -std=c++11 -pthread
 
 SRCDIR = .
 SOURCES = $(wildcard $(SRCDIR)/**/*.cpp $(SRCDIR)/**/*.cc)
 OBJECTS = $(SOURCES:.cpp=.o)
-EXECUTABLE = ../mynuc
+EXECUTABLE = ../mynucq
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@

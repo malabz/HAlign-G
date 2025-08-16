@@ -1,0 +1,17 @@
+CXX = g++
+CXXFLAGS = -O3 -std=c++11 -pthread
+
+SRCDIR = .
+SOURCES = $(wildcard $(SRCDIR)/**/*.cpp $(SRCDIR)/**/*.cc)
+OBJECTS = $(SOURCES:.cpp=.o)
+EXECUTABLE = ../mynuc1
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+.PHONY: clean
+clean:
+	rm -f $(SRCDIR)/**/*.o $(EXECUTABLE)
