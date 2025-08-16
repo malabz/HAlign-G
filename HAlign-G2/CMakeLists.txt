@@ -47,9 +47,9 @@ file(GLOB_RECURSE MYNUC_SOURCES
 )
 
 # 添加可执行文件
-add_executable(nucmer1 ${MYNUC_SOURCES})
+add_executable(mynuc1 ${MYNUC_SOURCES})
 
-target_compile_options(nucmer1 PRIVATE -O3 -pthread -static)
+target_compile_options(mynuc1 PRIVATE -O3 -pthread -static)
 
 # ====== nucmerq 部分 ======
 
@@ -66,7 +66,7 @@ file(GLOB_RECURSE MYNUC_SOURCES
 )
 
 # 添加可执行文件
-add_executable(nucmerq ${MYNUC_SOURCES})
+add_executable(mynucq ${MYNUC_SOURCES})
 
-target_compile_options(nucmerq PRIVATE -O3 -pthread -static)
+target_compile_options(mynucq PRIVATE -O3 -pthread -static)
 
